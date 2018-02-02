@@ -1,0 +1,130 @@
+---
+title: "Project Proposal: Alan, Rayne, Younes"
+output:
+     html_document
+---
+
+__Proposal Deadline: Feb 1, 2018 23:59:00 hrs.__
+
+
+- Edit this markdown file by __replacing only__ what is there in the
+chunks named `q0`, `q1`, `q2`, ..., `q5` with your team's appropriate
+answers. These chunks have been filled in as an example using the
+OpenFDA data.
+
+- Upload the filled in markdown to the project proposal assignment
+area (will be created shortly) in every one of the team member's
+private directory with the name `proposal.Rmd`.
+
+0. Who are the authors of this package? See format below.
+
+```{r q0}
+authors <- list(sunet1 = "alanaw1",
+                sunet2 = "rayne",
+                sunet3 = "younes")
+```
+
+1. What is your package trying to achieve?  Who is it aimed at?
+
+```q1
+
+1. Visualization. The package provides tools to visualize statistics computed on molecular genetic data, alongside model-independent analytical bounds the prescribe manifolds within which these statistics lie. 
+
+2. Analysis. The package provides functions to (1) simulate molecular genetic data using coalescent models, and to (2) compute values of molecular-genetic statistics alongside theoretical upper and lower bounds, allowing the user to interpret values of these statistics and infer the evolutionary history of the population.  
+
+The package is aimed at geneticists and evolutionary biologists interested in inferring evolutionary relationships between individuals in a population, for which current stochastic models of evolution are known to have mathematically intractable formulas for maximum likelihood estimates.    
+```
+
+2. Briefly describe the background if that's not obvious.  What field
+   or area of interest is it related to?  (Just briefly, in a paragraph
+   or two, maximum.) References, including web references, are welcome
+   where available.
+
+```q2
+
+This package is inspired by current research pursued in population genetics. In population genetics, standard models provide null models against which statistical tests for neutrality can be performed. These statistical tests rely on the frequency spectrum of a collection of genetic samples, which is an important summary statistic that can be used to infer mutation rates and population dynamics in parametric inference, or to test for neutrality in the case of categorical inference. 
+
+In tests for neutrality using the frequency spectrum, it is not clear what the distributions of the classical test statistics are. For example, Tajima's D, a widely used test for neutrality, appears to follow a beta distribution approximately according to simulation studies (Tajima 1989), but this observation has not been rigorously verified. 
+
+Recent studies on mathematical properties of population genetic statistics (see Alcala and Rosenberg, 2017; Jakobsson et al., 2013; Reddy and Rosenberg, 2012) have shown that many summary statistics are constrained both by closely related statistics and parameters of the data, so that values of the latter quantities restrict the range of values that the summary statistic can take. These results provide guidance to the usage and interpretation of summary statistics in genetic studies, by clarifying observations about the behaviour of summary statistics with regard to population parameters or other statistics calculated. They sometimes lead to novel empirical insights (Garud and Rosenberg 2015).
+
+Our package implements theoretical work establishing model-independent bounds on neutrality test statistics and estimators of mutation rates, both of which are functions of molecular genetic data. The package aims to provide a platform for users to visualize the behaviour of molecular genetic statistics within manifolds that bound their maximum and minimum values, which aid the user in developing intuition about how these statistics behave under different evolutionary scenarios, and to allow the user to visualize how distributions of these statistics look under different evolutionary hypotheses. 
+
+BIBLIOGRAPHY
+
+1) N. Alcala and N.A. Rosenberg, "Mathematical constraints on F_st: biallelic markers in arbitrarily many populations," Genetics (early online), 2017.
+
+2) N. Garud and N.A. Rosenberg, "Enhancing the mathematical properties of new haplotype homozygosity statistics for the detection of selective sweeps," Theoretical Population Biology 102: 94-101, 2015.
+
+3) M. Jakobsson, M.D. Edge, N.A. Rosenberg, "The relationship between F_st and the frequency of the most frequent allele," Genetics 193: 515-528, 2013.
+
+4) S. Reddy and N.A. Rosenberg, "Refining the relationship between homozygosity and the frequency of the most frequent allele," Journal of Mathematical Biology 64: 87-108, 2012.
+
+5) F. Tajima, "Statistical method for testing the neutral mutation hypothesis by DNA polymorphism," Genetics 123: 585-595, 1989.
+```
+
+3. Provide one or two use cases; that is, in a sentence or so say how
+   you see someone using the package.
+
+```q3
+
+1. Geneticists and evolutionary biologists interested in inferring evolutionary history from their data can plot summary statistics alongside their model-free bounds, on top of computing a p-value (which is the standard procedure). 
+
+2. Scientists interested in simulation studies to interrogate properties of the distributions of molecular genetic statistics under different evolutionary scenarios can rely on the package. To our knowledge, no package has been written that allows for visualization of these molecular genetic statistics. 
+```
+
+4. If you can, list the main functions or other software you plan on
+   including.  No need to implement anything now, but you should have
+   an idea.
+
+```q4
+
+1. A software to simulate data from coalescent models of evolution. (MS is an example written in C, but there are some R packages that do the job.) The simulation is not straightforward, and work needs to be done. (See e.g., Tavare 2004).
+
+2. Mathematical functions that compute analytical bounds on molecular genetic statistics. 
+
+3. Functions allowing the piping of R input into terminal commands so that external scripts can parse user-defined conditions to generate simulated data (e.g., user specifies population expansion in a simulation study), or to plot statistics of actual molecular genetic data (e.g., from the Human Genome Diversity Panel or the UK Biobank). 
+```
+
+```{r, echo = FALSE, hide = TRUE}
+none <- "none"
+basic <- "basic"
+proficient <- "proficient"
+dangerous <- "dangerous :-)"
+```
+
+5. For languages C/C++, Java, Python, Ruby, please specify your
+   proficiency: Proficient, basic knowledge, no knowledge.  (This
+   helps us evaluate the proposal sometimes and offer suggestions.)
+
+```{r q5}
+languages <- list(
+    ## replace the sunet1 and sunet2 and values below
+    ## appropriately for each member
+    alanaw1 = c(cxx = basic,
+               java = basic,
+               python = basic,
+               julia = none, 
+               ruby = none)
+    ,
+    rayne = c(cxx = basic,
+               java = basic,
+               python = proficient,
+               julia = none,                
+               ruby = none)
+    ,
+    younes = c(cxx = basic,
+               java = basic,
+               python = proficient,
+               julia = none,                
+               ruby = none)
+)
+```
+
+
+
+
+
+
+
+
