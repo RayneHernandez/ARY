@@ -51,6 +51,11 @@ R = 1000
 k.vec = c()
 diffStat.vec = c()
 
+
+getCommand <- function(n, S, theta) {
+  result = paste("./ms", n, "1 -t", theta, "-s", S, '-eN 0.2',theta, '> sfs.txt', sep = " ")
+  result
+}
 ### This step produces the required data frame ###
 ## Specify simulation parameters ##
 n = 500 # equals to first numeric argument in system formula 
