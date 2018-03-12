@@ -56,6 +56,42 @@ getCommand <- function(n, S, theta) {
   result = paste("./ms", n, "1 -t", theta, "-s", S, '-eN 0.2',theta, '> sfs.txt', sep = " ")
   result
 }
+
+runCommand <- function(R, command, S, n){
+  system(command)
+  system("sed '1,7d' sfs.txt > sfs-modified.txt")
+  system("sed -e 's/./,&/g' sfs-modified.txt > sfs.csv")
+  sfs.matrix = read.csv("sfs.csv",header=FALSE)
+  sfs.matrix = sfs.matrix[-1] 
+  sum(sfs.matrix$V2)
+  alleleFreq.vector=colSums(sfs.matrix)
+  
+  ### This step produces the SFS vector ###
+  sfs.vec = c()
+  for (i in 1:(n-1)) {
+    xi.i = 0
+    for (j in 1:S) {
+      if (alleleFreq.vector[j] == i) xi.i = xi.i+1
+    }
+    sfs.vec = c(sfs.vec,xi.i)
+  }
+  
+  ### This step computes Tajima's Pi / Tajima's D / Fu and Li's F and k for the vector ###
+  kOverS = sfs.vec[1] / S # get frequency of derived singletons
+  iOmega.vec = c(1:(n-1))
+  for (i in 1:(n-1)) {
+    #iOmega.vec[i] = (n-i)*i/choose(n,2) - 1/(little.a(n)) # Tajima's D (TOGGLE; uncomment to select) 
+    iOmega.vec[i] = ifelse(i==1,1,0)*(2/n-1) + ifelse(i==1,0,1)*((n-i)*i/choose(n,2)) # Fu and Li's F (TOGGLE; uncomment to select)
+  }
+  # tajimaD=sum(iOmega.vec*sfs.vec)/sqrt(u.T(n)*S + v.T(n)*S*S) # Tajima's D (TOGGLE; uncomment to select)
+  fuliF=sum(iOmega.vec*sfs.vec)/sqrt(u.F(n)*S + v.F(n)*S*S) # Fu and Li's F (TOGGLE; uncomment to select)
+  ### This step adds simulated data to output list ###
+  k.vec = c(k.vec,kOverS)
+  # diffStat.vec=c(diffStat.vec,tajimaD) # Tajima's D (TOGGLE; uncomment to select)
+  diffStat.vec=c(diffStat.vec,fuliF) # Fu and Li's F (TOGGLE; uncomment to select)
+
+}
+
 ### This step produces the required data frame ###
 ## Specify simulation parameters ##
 n = 500 # equals to first numeric argument in system formula 

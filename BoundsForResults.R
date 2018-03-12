@@ -50,7 +50,7 @@ f.thetaPi.min <- function(n,S,j,k) {
 
 ### Example Plots ###
 ## Initialize some parameters ##
-n=10
+n=50
 S=20
 j=1
 k=5
@@ -81,12 +81,15 @@ n.upper=50
 plot_tajima_Pi_n = function(n.lower, n.upper,j, k){
   vec.n = c(n.lower:n.upper)
   vec.thetaPi.max=c(1:length(vec.n))
+  
   for (i in 1:length(vec.n)) {
     vec.thetaPi.max[i]=f.thetaPi.max(i+n.lower-1,S,j,k) 
   }
   plot(vec.n,vec.thetaPi.max, xlab="No. of Sampled Individuals", ylab="Tajima's Pi",col="purple",ylim=c(0,70),main=paste("k =",k,", S =",S),pch="o")
   lines(vec.n, vec.thetaPi.max, xlim=range(vec.n), ylim=range(vec.thetaPi.max), col="darkslateblue",lwd=2,pch=16)
-  vec.ThetaPi.min=c(1:length(vec.n))
+  print(vec.n)
+  vec.thetaPi.min=c(1:length(vec.n))
+  print(vec.thetaPi.min)
   for (i in 1:length(vec.n)) {
     vec.thetaPi.min[i]=f.thetaPi.min(i+n.lower-1,S,j,k) 
   }
@@ -153,7 +156,7 @@ f.thetaH.min <- function(n,S,j,k) {
 
 ### Example Plots ###
 ##
-n=10
+n=50
 S=20
 j=1
 
@@ -235,7 +238,7 @@ f.TajimaD.min <- function(n,S,j,k) {
 
 ## Let's plot dependence of
 ## Tajima's D on frequency of singletons, k ##
-plot_tajima_D_k = function(n,S,j,k){
+plot_tajima_D_k = function(n,S,j){
   vec.k = c(0:S)
   vec.TajimaD.max = f.TajimaD.max(n,S,j,vec.k)
   plot(vec.k/S,vec.TajimaD.max, xlab="Frequency of Derived Singletons", ylab="Tajima's D",col="blue",ylim=c(-4,8),main=paste("n =",n,", S =",S),pch="o")
@@ -243,8 +246,12 @@ plot_tajima_D_k = function(n,S,j,k){
   vec.TajimaD.min = f.TajimaD.min(n,S,j,vec.k)   
   points(vec.k/S,vec.TajimaD.min,col="red",pch="o") 
   lines(vec.k/S, vec.TajimaD.min, xlim=range(vec.k), ylim=range(vec.TajimaD.min), col="darkred",lwd=2,pch=16)
-}
-plot_tajima_D_k(n,S,j,k)
+  
+  }
+n = 50 
+S = 10 
+j = 1
+plot_tajima_D_k(n,S,j)
 
 ## Let's plot dependence of
 ## Tajima's D on S ##
@@ -347,3 +354,4 @@ plot_Fu_li_n = function(n,S,j,k){
 }
 
 plot_Fu_li_n(n,S,j,k)
+
