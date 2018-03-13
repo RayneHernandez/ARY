@@ -50,7 +50,7 @@ f.thetaPi.min <- function(n,S,j,k) {
 
 ### Example Plots ###
 ## Initialize some parameters ##
-n=10
+n=50
 S=20
 j=1
 k=5
@@ -63,9 +63,9 @@ k=5
 plot_tajima_Pi_k = function(n, S, j){
   vec.k = c(0:S) 
   vec.thetaPi.max = f.thetaPi.max(n,S,j,vec.k)
-  plot(vec.k/S,vec.thetaPi.max, xlab="Frequency of Derived Singletons", ylab=expression("Tajima's"~pi),col="blue",ylim=c(0,50),main=paste("n =",n,", S =", S),pch="o")
-  lines(vec.k/S, vec.thetaPi.max, xlim=range(vec.k), ylim=range(vec.thetaPi.max), col="blue4",lwd=2,pch=16)
   vec.thetaPi.min = f.thetaPi.min(n,S,j,vec.k) 
+  plot(vec.k/S,vec.thetaPi.max, xlab="Frequency of Derived Singletons", ylab=expression("Tajima's"~pi),col="blue",ylim=range(c(vec.thetaPi.min, vec.thetaPi.max)),main=paste("n =",n,", S =", S),pch="o")
+  lines(vec.k/S, vec.thetaPi.max, xlim=range(vec.k), ylim=range(vec.thetaPi.max), col="blue4",lwd=2,pch=16)
   points(vec.k/S,vec.thetaPi.min,col="red",pch="o") 
   lines(vec.k/S, vec.thetaPi.min, xlim=range(vec.k), ylim=range(vec.thetaPi.min), col="darkred",lwd=2,pch=16)
 }
@@ -81,15 +81,28 @@ n.upper=50
 plot_tajima_Pi_n = function(n.lower, n.upper,S,j, k){
   vec.n = c(n.lower:n.upper)
   vec.thetaPi.max=c(1:length(vec.n))
+  
   for (i in 1:length(vec.n)) {
     vec.thetaPi.max[i]=f.thetaPi.max(i+n.lower-1,S,j,k) 
   }
+<<<<<<< HEAD
   plot(vec.n,vec.thetaPi.max, xlab="No. of Sampled Individuals", ylab="Tajima's Pi",col="purple",ylim=c(0,70),main=paste("k =",k,", S =",S),pch="o")
   lines(vec.n, vec.thetaPi.max, xlim=range(vec.n), ylim=range(vec.thetaPi.max), col="darkslateblue",lwd=2,pch=16)
+<<<<<<< HEAD
   vec.thetaPi.min=c(1:length(vec.n))
+=======
+  print(vec.n)
+  vec.thetaPi.min=c(1:length(vec.n))
+  print(vec.thetaPi.min)
+=======
+  vec.thetaPi.min=c(1:length(vec.n))
+>>>>>>> f1b2206f7c214885d6c6e1e2b0f7ea35f453cc4c
+>>>>>>> fdd3658f4f78cf4714be3c5c9b3d023eb240025b
   for (i in 1:length(vec.n)) {
     vec.thetaPi.min[i]=f.thetaPi.min(i+n.lower-1,S,j,k) 
   }
+  plot(vec.n,vec.thetaPi.max, xlab="No. of Sampled Individuals", ylab="Tajima's Pi",col="purple",ylim=range(c(vec.thetaPi.min, vec.thetaPi.max)),main=paste("k =",k,", S =",S),pch="o")
+  lines(vec.n, vec.thetaPi.max, xlim=range(vec.n), ylim=range(vec.thetaPi.max), col="darkslateblue",lwd=2,pch=16)
   points(vec.n,vec.thetaPi.min,col="green",pch="o") 
   lines(vec.n, vec.thetaPi.min, xlim=range(vec.n), ylim=range(vec.thetaPi.min), col="darkgreen",lwd=2,pch=16)
 }
@@ -104,9 +117,9 @@ plot_tajima_Pi_n(n.lower,n.upper,S,j, k)
 plot_tajima_Pi_S = function(n, S, k, j){
   vec.S = seq(from=k,to=100,by=1) 
   vec.thetaPi.max = f.thetaPi.max(n,vec.S,j,k)
-  plot(vec.S,vec.thetaPi.max, xlab="No. of Segregating Sites", ylab="Tajima's Pi",col="orange",ylim=c(0,50),main=paste("k =",k,", n =",n),pch="o")
-  lines(vec.S, vec.thetaPi.max, xlim=range(vec.S), ylim=range(vec.thetaPi.max), col="orange4",lwd=2,pch=16)
   vec.thetaPi.min = f.thetaPi.min(n,vec.S,j,k)
+  plot(vec.S,vec.thetaPi.max, xlab="No. of Segregating Sites", ylab="Tajima's Pi",col="orange",ylim=range(c(vec.thetaPi.min, vec.thetaPi.max)),main=paste("k =",k,", n =",n),pch="o")
+  lines(vec.S, vec.thetaPi.max, xlim=range(vec.S), ylim=range(vec.thetaPi.max), col="orange4",lwd=2,pch=16)
   points(vec.S,vec.thetaPi.min,col="pink",pch="o") 
   lines(vec.S, vec.thetaPi.min, xlim=range(vec.S), ylim=range(vec.thetaPi.min), col="pink4",lwd=2,pch=16)
 }
@@ -121,7 +134,7 @@ plot_tajima_Pi_S(n, S, k, j)
 #### DO NOT RUN THIS PART IN CONJUNCTION 
 #### with Tajima's Pi code above! ####
 
-f.max <- function(n,j) { # Helper function: get upper bound
+f.max_Fay <- function(n,j) { # Helper function: get upper bound
   f.max.out = 0 
   for (i in 1:(n-1)) {
     if (i!=j & i*i > f.max.out) {
@@ -131,7 +144,7 @@ f.max <- function(n,j) { # Helper function: get upper bound
   return(f.max.out)
 }
 
-f.min <- function(n,j) { # Helper function: get lower bound
+f.min_Fay <- function(n,j) { # Helper function: get lower bound
   f.min.out = n * n 
   for (i in 1:(n-1)) {
     if (i!=j & i*i < f.min.out) {
@@ -143,17 +156,17 @@ f.min <- function(n,j) { # Helper function: get lower bound
 
 ### Upper Bound ###
 f.thetaH.max <- function(n,S,j,k) { 
-  (k*j*j + (S-k)*f.max(n,j)) / choose(n,2)
+  (k*j*j + (S-k)*f.max_Fay(n,j)) / choose(n,2)
 }
 
 ### Lower Bound ###
 f.thetaH.min <- function(n,S,j,k) {
-  (k*j*j + (S-k)*f.min(n,j)) / choose(n,2)
+  (k*j*j + (S-k)*f.min_Fay(n,j)) / choose(n,2)
 }
 
 ### Example Plots ###
 ##
-n=10
+n=50
 S=20
 j=1
 
@@ -162,8 +175,8 @@ j=1
 plot_Fay_H_k = function(n,S,j){
   vec.k = c(0:S)
   vec.thetaH.max = f.thetaH.max(n,S,j,vec.k)
-  plot(vec.k,vec.thetaH.max, xlab="k", ylab="Fay and Wu's H",col="blue",ylim=c(0,100),main=paste("n =",n,", S =",S,", j =",j))
   vec.thetaH.min = f.thetaH.min(n,S,j,vec.k)
+  plot(vec.k,vec.thetaH.max, xlab="k", ylab="Fay and Wu's H",col="blue",ylim=range(c(vec.thetaH.min, vec.thetaH.max)),main=paste("n =",n,", S =",S,", j =",j))
   points(vec.k,vec.thetaH.min,col="red") 
 }
 
@@ -174,9 +187,9 @@ plot_Fay_H_k(n,S,j)
 plot_Fay_H_S = function(n,S,j,k){
   vec.S = seq(from=k,to=100,by=1) 
   vec.thetaH.max = f.thetaH.max(n,vec.S,j,k)
-  plot(vec.S,vec.thetaH.max, xlab="S", ylab="Fay and Wu's H",col="purple",ylim=c(0,200),main=paste("n =",n,", j =",j,", k =",k))
-  lines(vec.S, vec.thetaH.max, xlim=range(vec.S), ylim=range(vec.thetaH.max), col="darkslateblue",lwd=2,pch=16)
   vec.thetaH.min = f.thetaH.min(n,vec.S,j,k)
+  plot(vec.S,vec.thetaH.max, xlab="S", ylab="Fay and Wu's H",col="purple",ylim=range(c(vec.thetaH.min, vec.thetaH.max)),main=paste("n =",n,", j =",j,", k =",k))
+  lines(vec.S, vec.thetaH.max, xlim=range(vec.S), ylim=range(vec.thetaH.max), col="darkslateblue",lwd=2,pch=16)
   points(vec.S,vec.thetaH.min,col="green") 
   lines(vec.S, vec.thetaH.min, xlim=range(vec.S), ylim=range(vec.thetaH.min), col="darkgreen",lwd=2,pch=16)
 }
@@ -238,22 +251,32 @@ f.TajimaD.min <- function(n,S,j,k) {
 plot_tajima_D_k = function(n,S,j){
   vec.k = c(0:S)
   vec.TajimaD.max = f.TajimaD.max(n,S,j,vec.k)
-  plot(vec.k/S,vec.TajimaD.max, xlab="Frequency of Derived Singletons", ylab="Tajima's D",col="blue",ylim=c(-4,8),main=paste("n =",n,", S =",S),pch="o")
-  lines(vec.k/S, vec.TajimaD.max, xlim=range(vec.k), ylim=range(vec.TajimaD.max), col="blue4",lwd=2,pch=16)
   vec.TajimaD.min = f.TajimaD.min(n,S,j,vec.k)   
+  plot(vec.k/S,vec.TajimaD.max, xlab="Frequency of Derived Singletons", ylab="Tajima's D",col="blue",ylim=range(c(vec.TajimaD.max, vec.TajimaD.min)),main=paste("n =",n,", S =",S),pch="o")
+  lines(vec.k/S, vec.TajimaD.max, xlim=range(vec.k), ylim=range(vec.TajimaD.max), col="blue4",lwd=2,pch=16)
   points(vec.k/S,vec.TajimaD.min,col="red",pch="o") 
   lines(vec.k/S, vec.TajimaD.min, xlim=range(vec.k), ylim=range(vec.TajimaD.min), col="darkred",lwd=2,pch=16)
+<<<<<<< HEAD
 }
 plot_tajima_D_k(n,S,j)
 plot_tajima_D_k(50,100,1)
+=======
+  
+  }
+n = 50 
+S = 10 
+j = 1
+plot_tajima_D_k(n,S,j)
+
+>>>>>>> fdd3658f4f78cf4714be3c5c9b3d023eb240025b
 ## Let's plot dependence of
 ## Tajima's D on S ##
 plot_tajima_D_S = function(n,S,j,k){
   vec.S = seq(from=k,to=200,by=1) 
   vec.TajimaD.max = f.TajimaD.max(n,vec.S,j,k)
-  plot(vec.S,vec.TajimaD.max, xlab="No. of Segregating Sites", ylab="Tajima's D",col="orange",xlim=range(vec.S), ylim=range(-4,8),main=paste("k =",k,", n =",n),pch="o")
-  lines(vec.S, vec.TajimaD.max, xlim=range(vec.S), ylim=range(vec.TajimaD.max), col="orange4",lwd=2,pch=16)
   vec.TajimaD.min = f.TajimaD.min(n,vec.S,j,k)
+  plot(vec.S,vec.TajimaD.max, xlab="No. of Segregating Sites", ylab="Tajima's D",col="orange",xlim=range(vec.S), ylim=range(c(vec.TajimaD.max, vec.TajimaD.min)),main=paste("k =",k,", n =",n),pch="o")
+  lines(vec.S, vec.TajimaD.max, xlim=range(vec.S), ylim=range(vec.TajimaD.max), col="orange4",lwd=2,pch=16)
   points(vec.S,vec.TajimaD.min,col="pink",pch="o") 
   lines(vec.S, vec.TajimaD.min, xlim=range(vec.S), ylim=range(vec.TajimaD.min), col="pink4",lwd=2,pch=16)
   
@@ -271,12 +294,13 @@ plot_tajima_D_n = function(n.lower, n.upper, S,j,k){
   for (i in 1:length(vec.n)) {
     vec.TajimaD.max[i]=f.TajimaD.max(i+n.lower-1,S,j,k) 
   }
-  plot(vec.n,vec.TajimaD.max, xlab="No. of Sampled Individuals", ylab="Tajima's D",col="purple",xlim=range(vec.n), ylim=range(-4,6),main=paste("k =",k,", S =",S),pch="o")
-  lines(vec.n, vec.TajimaD.max, xlim=range(vec.n), ylim=range(vec.TajimaD.max), col="darkslateblue",lwd=2,pch=16)
   vec.TajimaD.min=c(1:length(vec.n))
   for (i in 1:length(vec.n)) {
     vec.TajimaD.min[i]=f.TajimaD.min(i+n.lower-1,S,j,k) 
   }
+  plot(vec.n,vec.TajimaD.max, xlab="No. of Sampled Individuals", ylab="Tajima's D",col="purple",xlim=range(vec.n), ylim=range(c(vec.TajimaD.max[!is.na(vec.TajimaD.max)], vec.TajimaD.min[!is.na(vec.TajimaD.max)])),main=paste("k =",k,", S =",S),pch="o")
+  lines(vec.n, vec.TajimaD.max, xlim=range(vec.n), ylim=range(vec.TajimaD.max), col="darkslateblue",lwd=2,pch=16)
+
   points(vec.n,vec.TajimaD.min,col="green",pch="o") 
   lines(vec.n, vec.TajimaD.min, xlim=range(vec.n), ylim=range(vec.TajimaD.min), col="darkgreen",lwd=2,pch=16)
 }
@@ -301,9 +325,9 @@ f.FuLiF.min <- function(n,S,j,k) {
 plot_Fu_s = function(n,S,j){
   vec.k = c(0:S)
   vec.FuLiF.max = f.FuLiF.max(n,S,j,vec.k)
-  plot(vec.k/S,vec.FuLiF.max, xlab="Frequency of Derived Singletons", ylab="Fu and Li's F",col="blue",ylim=c(-12,6),main=paste("n =",n,", S =",S),pch="o")
-  lines(vec.k/S, vec.FuLiF.max, xlim=range(vec.k/S), ylim=range(vec.FuLiF.max), col="blue4",lwd=2,pch=16)
   vec.FuLiF.min = f.FuLiF.min(n,S,j,vec.k)   
+  plot(vec.k/S,vec.FuLiF.max, xlab="Frequency of Derived Singletons", ylab="Fu and Li's F",col="blue",ylim=range(c(vec.FuLiF.min, vec.FuLiF.max)),main=paste("n =",n,", S =",S),pch="o")
+  lines(vec.k/S, vec.FuLiF.max, xlim=range(vec.k/S), ylim=range(vec.FuLiF.max), col="blue4",lwd=2,pch=16)
   points(vec.k/S,vec.FuLiF.min,col="red",pch="o") 
   lines(vec.k/S, vec.FuLiF.min, xlim=range(vec.k/S), ylim=range(vec.FuLiF.min), col="darkred",lwd=2,pch=16)
 }
@@ -316,9 +340,9 @@ plot_Fu_s(n,S,j)
 plot_Fu_li_S = function(n,S,j,k){
   vec.S = seq(from=k,to=200,by=1) 
   vec.FuLiF.max = f.FuLiF.max(n,vec.S,j,k)
-  plot(vec.S,vec.FuLiF.max, xlab="No. of Segregating Sites", ylab="Fu and Li's F",col="orange",xlim=range(vec.S), ylim=range(-12,6),main=paste("k =",k,", n =",n),pch="o")
-  lines(vec.S, vec.FuLiF.max, xlim=range(vec.S), ylim=range(vec.FuLiF.max), col="orange4",lwd=2,pch=16)
   vec.FuLiF.min = f.FuLiF.min(n,vec.S,j,k)
+  plot(vec.S,vec.FuLiF.max, xlab="No. of Segregating Sites", ylab="Fu and Li's F",col="orange",xlim=range(vec.S), ylim=range(c(vec.FuLiF.min, vec.FuLiF.max)),main=paste("k =",k,", n =",n),pch="o")
+  lines(vec.S, vec.FuLiF.max, xlim=range(vec.S), ylim=range(vec.FuLiF.max), col="orange4",lwd=2,pch=16)
   points(vec.S,vec.FuLiF.min,col="pink",pch="o") 
   lines(vec.S, vec.FuLiF.min, xlim=range(vec.S), ylim=range(vec.FuLiF.min), col="pink4",lwd=2,pch=16)
   
@@ -336,14 +360,15 @@ plot_Fu_li_n = function(n,S,j,k){
   for (i in 1:length(vec.n)) {
     vec.FuLiF.max[i]=f.FuLiF.max(i+n.lower-1,S,j,k) 
   }
-  plot(vec.n,vec.FuLiF.max, xlab="No. of Sampled Individuals", ylab="Fu and Li's F",col="purple",xlim=range(vec.n), ylim=range(-4,12),main=paste("k =",k,", S =",S),pch="o")
-  lines(vec.n, vec.FuLiF.max, xlim=range(vec.n), ylim=range(vec.FuLiF.max), col="darkslateblue",lwd=2,pch=16)
   vec.FuLiF.min=c(1:length(vec.n))
   for (i in 1:length(vec.n)) {
     vec.FuLiF.min[i]=f.FuLiF.min(i+n.lower-1,S,j,k) 
   }
+  plot(vec.n,vec.FuLiF.max, xlab="No. of Sampled Individuals", ylab="Fu and Li's F",col="purple",xlim=range(vec.n), ylim=range(c(vec.FuLiF.min, vec.FuLiF.max)),main=paste("k =",k,", S =",S),pch="o")
+  lines(vec.n, vec.FuLiF.max, xlim=range(vec.n), ylim=range(vec.FuLiF.max), col="darkslateblue",lwd=2,pch=16)
   points(vec.n,vec.FuLiF.min,col="green",pch="o") 
   lines(vec.n, vec.FuLiF.min, xlim=range(vec.n), ylim=range(vec.FuLiF.min), col="darkgreen",lwd=2,pch=16)
 }
 
 plot_Fu_li_n(n,S,j,k)
+
