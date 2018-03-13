@@ -8,7 +8,7 @@
 
 #### Paramaters ####
 S = 100 # Segregating Sites
-n = 50 # Individuals
+n = 500 # Individuals
 j = 1 # Component of SFS, must be in [1,n-1]
 k = 5 # Value of \xi_j, must be in [0,S]
 ####
@@ -78,7 +78,7 @@ plot_tajima_Pi_k(n,S,j)
 n.lower=3
 n.upper=50
 
-plot_tajima_Pi_n = function(n.lower, n.upper,j, k){
+plot_tajima_Pi_n = function(n.lower, n.upper,S,j, k){
   vec.n = c(n.lower:n.upper)
   vec.thetaPi.max=c(1:length(vec.n))
   
@@ -88,12 +88,16 @@ plot_tajima_Pi_n = function(n.lower, n.upper,j, k){
 <<<<<<< HEAD
   plot(vec.n,vec.thetaPi.max, xlab="No. of Sampled Individuals", ylab="Tajima's Pi",col="purple",ylim=c(0,70),main=paste("k =",k,", S =",S),pch="o")
   lines(vec.n, vec.thetaPi.max, xlim=range(vec.n), ylim=range(vec.thetaPi.max), col="darkslateblue",lwd=2,pch=16)
+<<<<<<< HEAD
+  vec.thetaPi.min=c(1:length(vec.n))
+=======
   print(vec.n)
   vec.thetaPi.min=c(1:length(vec.n))
   print(vec.thetaPi.min)
 =======
   vec.thetaPi.min=c(1:length(vec.n))
 >>>>>>> f1b2206f7c214885d6c6e1e2b0f7ea35f453cc4c
+>>>>>>> fdd3658f4f78cf4714be3c5c9b3d023eb240025b
   for (i in 1:length(vec.n)) {
     vec.thetaPi.min[i]=f.thetaPi.min(i+n.lower-1,S,j,k) 
   }
@@ -103,7 +107,7 @@ plot_tajima_Pi_n = function(n.lower, n.upper,j, k){
   lines(vec.n, vec.thetaPi.min, xlim=range(vec.n), ylim=range(vec.thetaPi.min), col="darkgreen",lwd=2,pch=16)
 }
 
-plot_tajima_Pi_n(n.lower,n.upper,j, k)
+plot_tajima_Pi_n(n.lower,n.upper,S,j, k)
 # =====================================================================================================
 
 ## Let's plot dependence of
@@ -252,6 +256,11 @@ plot_tajima_D_k = function(n,S,j){
   lines(vec.k/S, vec.TajimaD.max, xlim=range(vec.k), ylim=range(vec.TajimaD.max), col="blue4",lwd=2,pch=16)
   points(vec.k/S,vec.TajimaD.min,col="red",pch="o") 
   lines(vec.k/S, vec.TajimaD.min, xlim=range(vec.k), ylim=range(vec.TajimaD.min), col="darkred",lwd=2,pch=16)
+<<<<<<< HEAD
+}
+plot_tajima_D_k(n,S,j)
+plot_tajima_D_k(50,100,1)
+=======
   
   }
 n = 50 
@@ -259,6 +268,7 @@ S = 10
 j = 1
 plot_tajima_D_k(n,S,j)
 
+>>>>>>> fdd3658f4f78cf4714be3c5c9b3d023eb240025b
 ## Let's plot dependence of
 ## Tajima's D on S ##
 plot_tajima_D_S = function(n,S,j,k){

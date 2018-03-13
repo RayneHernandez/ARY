@@ -141,8 +141,6 @@ write.table(simulation.output, file = "fuliF-bottleneckN500S100.txt", row.names 
 
 ################## END OF DATA SIMULATION! CONGRATULATIONS! ##################
 
-
-
 ## Example 2: Same as above, but with piping of output to sample_stats C program to generate summary statistics of dataset
 system("./ms 20 1 -t 5.0 -s 1000 | ./sample_stats > samp.txt") # output file is .txt, can be changed to .ss, .csv, etc. 
 

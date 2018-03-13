@@ -77,6 +77,8 @@ lines(vec.k/S, vec.FuLiF.min, xlim=range(vec.k/S), ylim=range(vec.FuLiF.min), co
 # Paste this in: "Frequency of Derived Singletons" "Tajima's D"
 ## Let's add the simulated data ##
 points(k.vec,diffStat.vec,col="black",pch="o")
-
+#====================
+df = read.table("sfs.txt",header=FALSE)
+#=====================
 df = read.table("fuliF-bottleneckN500S100.txt",header=FALSE)
 points(as.vector(df$V1[-1]),as.vector(df$V2[-1]),col="black",pch="o")
