@@ -57,7 +57,7 @@ getCommand <- function(n, S, theta) {
   result
 }
 
-runCommand <- function(R, command, S, n){
+runCommand <- function(R, command, S, n) {
   system(command)
   system("sed '1,7d' sfs.txt > sfs-modified.txt")
   system("sed -e 's/./,&/g' sfs-modified.txt > sfs.csv")
