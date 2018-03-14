@@ -46,17 +46,18 @@ u.F <- function(n) {
 ### Pre-simulation step ###
 ## HOW MANY REPS DO YOU WANT TO SIMULATE? ##
 R = 1000
+n = 500 # equals to first numeric argument in system formula
+theta = 5.0 # equals to "-t" in system formula
+S = 100 # equals to "-s" in system formula
+
 ## (Optional) LET'S CREATE A DATA FRAME TO STORE SIMULATION OUTPUT! ## 
 # df = data.frame(matrix(ncol=2,nrow=R,dimnames=list(c(),c("k","diffStat"))),stringsAsFactors=F)
-
-
-
 getCommand <- function(n, S, theta) {
   result = paste("./ms", n, "1 -t", theta, "-s", S, '-eN 0.2',theta, '> sfs.txt', sep = " ")
   result
 }
 
-runCommand <- function(R,n, S, theta) {
+runCommand <- function(R, n, S, theta, f = 'FuLi') {
   k.vec = c()
   diffStat.vec = c()
   command = getCommand(n, S, theta)
@@ -82,15 +83,25 @@ runCommand <- function(R,n, S, theta) {
   kOverS = sfs.vec[1] / S # get frequency of derived singletons
   iOmega.vec = c(1:(n-1))
   for (i in 1:(n-1)) {
-    #iOmega.vec[i] = (n-i)*i/choose(n,2) - 1/(little.a(n)) # Tajima's D (TOGGLE; uncomment to select) 
-    iOmega.vec[i] = ifelse(i==1,1,0)*(2/n-1) + ifelse(i==1,0,1)*((n-i)*i/choose(n,2)) # Fu and Li's F (TOGGLE; uncomment to select)
+    if(f == 'fuLi'){
+      iOmega.vec[i] = ifelse(i==1,1,0)*(2/n-1) + ifelse(i==1,0,1)*((n-i)*i/choose(n,2)) # Fu and Li's F (TOGGLE; uncomment to select)
+    } else if (f == 'taj'){
+      iOmega.vec[i] = (n-i)*i/choose(n,2) - 1/(little.a(n)) # Tajima's D (TOGGLE; uncomment to select)
+    }
+
   }
-  # tajimaD=sum(iOmega.vec*sfs.vec)/sqrt(u.T(n)*S + v.T(n)*S*S) # Tajima's D (TOGGLE; uncomment to select)
-  fuliF=sum(iOmega.vec*sfs.vec)/sqrt(u.F(n)*S + v.F(n)*S*S) # Fu and Li's F (TOGGLE; uncomment to select)
+  if(f == 'fuLi'){
+    fuliF=sum(iOmega.vec*sfs.vec)/sqrt(u.F(n)*S + v.F(n)*S*S) # Fu and Li's F (TOGGLE; uncomment to select)
+  } else if (f == 'taj'){
+    tajimaD=sum(iOmega.vec*sfs.vec)/sqrt(u.T(n)*S + v.T(n)*S*S) # Tajima's D (TOGGLE; uncomment to select)
+  }
   ### This step adds simulated data to output list ###
   k.vec = c(k.vec,kOverS)
-  # diffStat.vec=c(diffStat.vec,tajimaD) # Tajima's D (TOGGLE; uncomment to select)
-  diffStat.vec=c(diffStat.vec,fuliF) # Fu and Li's F (TOGGLE; uncomment to select)
+  if( f == 'fuLi'){
+    diffStat.vec=c(diffStat.vec,fuliF) # Fu and Li's F (TOGGLE; uncomment to select)
+  } else if (f == 'taj'){
+    diffStat.vec=c(diffStat.vec,tajimaD) # Tajima's D (TOGGLE; uncomment to select)
+  }
   simulation.output = data.frame(k.vec,diffStat.vec)
   write.table(simulation.output, file = "ouput.txt", row.names = FALSE)
 }  
