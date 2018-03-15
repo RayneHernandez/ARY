@@ -88,6 +88,8 @@ runCommand <- function(R, n, S, theta, f = 'FuLi') {
         iOmega.vec[i] = ifelse(i==1,1,0)*(2/n-1) + ifelse(i==1,0,1)*((n-i)*i/choose(n,2)) # Fu and Li's F (TOGGLE; uncomment to select)
       } else if (f == 'TajD'){
         iOmega.vec[i] = (n-i)*i/choose(n,2) - 1/(little.a(n)) # Tajima's D (TOGGLE; uncomment to select)
+      } else if (f == 'TajPi') {
+        iOmega.vec[i] = i*(n-i) / choose(n,2)
       }
       
     }
@@ -95,6 +97,8 @@ runCommand <- function(R, n, S, theta, f = 'FuLi') {
       fuliF=sum(iOmega.vec*sfs.vec)/sqrt(u.F(n)*S + v.F(n)*S*S) # Fu and Li's F (TOGGLE; uncomment to select)
     } else if (f == 'TajD'){
       tajimaD=sum(iOmega.vec*sfs.vec)/sqrt(u.T(n)*S + v.T(n)*S*S) # Tajima's D (TOGGLE; uncomment to select)
+    } else if (f == 'TajPi') {
+      tajimaPi=sum(iOmega.vec*sfs.vec) # Tajima's Pi (TOGGLE; uncomment to select)
     }
     ### This step adds simulated data to output list ###
     k.vec = c(k.vec,kOverS)
@@ -102,6 +106,8 @@ runCommand <- function(R, n, S, theta, f = 'FuLi') {
       diffStat.vec=c(diffStat.vec,fuliF) # Fu and Li's F (TOGGLE; uncomment to select)
     } else if (f == 'TajD'){
       diffStat.vec=c(diffStat.vec,tajimaD) # Tajima's D (TOGGLE; uncomment to select)
+    } else if (f == 'TajPi'){
+      diffStat.vec=c(diffStat.vec,tajimaPi) # Tajima's Pi (TOGGLE; uncomment to select)
     }
   }
   simulation.output = data.frame(k.vec,diffStat.vec)

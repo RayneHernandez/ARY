@@ -50,8 +50,9 @@ f.thetaPi.min <- function(n,S,j,k) {
 
 ### Example Plots ###
 ## Initialize some parameters ##
-n=50
-S=20
+R=100
+n=500
+S=100
 j=1
 k=5
 
@@ -60,17 +61,24 @@ k=5
 
 # This has been changed to a function
 # =====================================================================================================
-plot_tajima_Pi_k = function(n, S, j){
+###========== PLOTSTATISTIC ===========###
+plot_tajima_Pi_k = function(R,n,S,j,theta,plot_points=FALSE){
   vec.k = c(0:S) 
   vec.thetaPi.max = f.thetaPi.max(n,S,j,vec.k)
   vec.thetaPi.min = f.thetaPi.min(n,S,j,vec.k) 
-  plot(vec.k/S,vec.thetaPi.max, xlab="Frequency of Derived Singletons", ylab=expression("Tajima's"~pi),col="blue",ylim=range(c(vec.thetaPi.min, vec.thetaPi.max)),main=paste("n =",n,", S =", S),pch="o")
-  lines(vec.k/S, vec.thetaPi.max, xlim=range(vec.k), ylim=range(vec.thetaPi.max), col="blue4",lwd=2,pch=16)
-  points(vec.k/S,vec.thetaPi.min,col="red",pch="o") 
-  lines(vec.k/S, vec.thetaPi.min, xlim=range(vec.k), ylim=range(vec.thetaPi.min), col="darkred",lwd=2,pch=16)
+  plot(vec.k/S,vec.thetaPi.max, xlab="Frequency of Derived Singletons", ylab=expression("Tajima's"~pi),col="blue",
+       type='l',lwd=2,ylim=range(c(vec.thetaPi.min, vec.thetaPi.max)),main=paste("n =",n,", S =", S),pch="o")
+  #lines(vec.k/S, vec.thetaPi.max, xlim=range(vec.k), ylim=range(vec.thetaPi.max), col="blue4",lwd=2,pch=16)
+  #points(vec.k/S,vec.thetaPi.min,col="red",pch="o") 
+  lines(vec.k/S, vec.thetaPi.min, xlim=range(vec.k), ylim=range(vec.thetaPi.min), col="red",lwd=2,pch=16)
+  if(plot_points == TRUE){
+    runCommand(R, n, S,theta, f = 'TajPi')
+    df = read.table("output.txt",header=FALSE)
+    points(as.vector(df$V1[-1]),as.vector(df$V2[-1]),col="black",pch="o")
+  }
 }
 
-plot_tajima_Pi_k(n,S,j)
+plot_tajima_Pi_k(R,n,S,j,theta,TRUE)
 # =====================================================================================================
 
 ## Let's plot dependence of
@@ -85,19 +93,19 @@ plot_tajima_Pi_n = function(n.lower, n.upper,S,j, k){
   for (i in 1:length(vec.n)) {
     vec.thetaPi.max[i]=f.thetaPi.max(i+n.lower-1,S,j,k) 
   }
-<<<<<<< HEAD
+#<<<<<<< HEAD
   plot(vec.n,vec.thetaPi.max, xlab="No. of Sampled Individuals", ylab="Tajima's Pi",col="purple",ylim=c(0,70),main=paste("k =",k,", S =",S),pch="o")
   lines(vec.n, vec.thetaPi.max, xlim=range(vec.n), ylim=range(vec.thetaPi.max), col="darkslateblue",lwd=2,pch=16)
-<<<<<<< HEAD
+#<<<<<<< HEAD
   vec.thetaPi.min=c(1:length(vec.n))
-=======
+#=======
   print(vec.n)
   vec.thetaPi.min=c(1:length(vec.n))
   print(vec.thetaPi.min)
-=======
+#=======
   vec.thetaPi.min=c(1:length(vec.n))
->>>>>>> f1b2206f7c214885d6c6e1e2b0f7ea35f453cc4c
->>>>>>> fdd3658f4f78cf4714be3c5c9b3d023eb240025b
+#>>>>>>> f1b2206f7c214885d6c6e1e2b0f7ea35f453cc4c
+#>>>>>>> fdd3658f4f78cf4714be3c5c9b3d023eb240025b
   for (i in 1:length(vec.n)) {
     vec.thetaPi.min[i]=f.thetaPi.min(i+n.lower-1,S,j,k) 
   }
@@ -188,6 +196,7 @@ plot_Fay_H_k = function(n,S,j, R, theta = 5, plot_points = FALSE){
 }
 
 plot_Fay_H_k(n,S,j, R, plot_points = TRUE)
+#============================================
 
 ## Let's plot dependence of
 ## Fay and Wu's H on S ##
@@ -255,6 +264,7 @@ f.TajimaD.min <- function(n,S,j,k) {
 
 ## Let's plot dependence of
 ## Tajima's D on frequency of singletons, k ##
+###========== PLOTSTATISTIC ===========###
 plot_tajima_D_k = function(R,n,S,j,theta,plot_points = FALSE){
   vec.k = c(0:S)
   vec.TajimaD.max = f.TajimaD.max(n,S,j,vec.k)
@@ -271,7 +281,8 @@ plot_tajima_D_k = function(R,n,S,j,theta,plot_points = FALSE){
   }
 }
 plot_tajima_D_k(R,n,S,j,theta,TRUE)
-plot_tajima_D_k(50,100,1)
+
+#################====================
 
 #n = 50 
 #S = 10 
@@ -331,6 +342,7 @@ f.FuLiF.min <- function(n,S,j,k) {
 
 ## Let's plot dependence of
 ## Fu and Li's F on frequency of singletons \xi_1 ##
+###========== PLOTSTATISTIC ===========###
 plot_Fu_k = function(R,n,S,j,theta=5 ,plot_points = FALSE){
   vec.k = c(0:S)
   vec.FuLiF.max = f.FuLiF.max(n,S,j,vec.k)
@@ -349,7 +361,7 @@ plot_Fu_k = function(R,n,S,j,theta=5 ,plot_points = FALSE){
 }
 
 plot_Fu_k(R,n,S,j,theta, plot_points = TRUE)
-
+#=============================================
 
 ## Let's plot dependence of
 ## Fu and Li's F on S ##
