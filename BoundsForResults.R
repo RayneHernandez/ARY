@@ -354,13 +354,27 @@ plot_Fu_k = function(R,n,S,j,theta=5 ,plot_points = FALSE){
   #points(vec.k/S,vec.FuLiF.min,col="red",pch="o") 
   lines(vec.k/S, vec.FuLiF.min, xlim=range(vec.k/S), ylim=range(vec.FuLiF.min), col="red",lwd=2,pch=16)
   if(plot_points == TRUE){
-    runCommand(R,n,S,theta,f = 'FuLi')
+    runCommand(R,n,S,theta)
     df = read.table("output.txt",header=FALSE)
     points(as.vector(df$V1[-1]),as.vector(df$V2[-1]),col="black",pch="o")
   }
 }
 
 plot_Fu_k(R,n,S,j,theta, plot_points = TRUE)
+#=============================================
+# This section is used to plot the statistic 
+plot_statistic <- function(fun = 'plot_Fu_k', R ,n, S,j, theta ,plot_points = FALSE, ...){
+  if(fun == 'plot_Fu_k'){
+    plot_Fu_k(R,n,S,j,theta, plot_points)
+  } else if (fun == 'plot_tajima_Pi_k'){
+    print(paste('R',R))
+    plot_tajima_Pi_k(R , n , S , j , theta, plot_points)
+  } else if(fun == 'plot_tajima_D_k'){
+    plot_tajima_D_k(R,n,S,j,theta,plot_points)
+  }
+}
+
+plot_statistic('plot_tajima_Pi_k', R = 1000 ,n = 500,S = 100,j = 1, theta=5, plot_points = TRUE)
 #=============================================
 
 ## Let's plot dependence of

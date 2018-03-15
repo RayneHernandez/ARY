@@ -57,7 +57,7 @@ getCommand <- function(n, S, theta) {
   result
 }
 
-runCommand <- function(R, n, S, theta, f = 'FuLi') {
+runCommand <- function(R, n, S, theta, f = 'FuLi', ...) {
   k.vec = c()
   diffStat.vec = c()
   command = getCommand(n, S, theta)
