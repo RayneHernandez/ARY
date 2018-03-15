@@ -172,15 +172,22 @@ j=1
 
 ## Let's plot dependence of
 ## Fay and Wu's H on k ##
-plot_Fay_H_k = function(n,S,j){
+plot_Fay_H_k = function(n,S,j, R, theta = 5, plot_points = FALSE){
   vec.k = c(0:S)
   vec.thetaH.max = f.thetaH.max(n,S,j,vec.k)
   vec.thetaH.min = f.thetaH.min(n,S,j,vec.k)
-  plot(vec.k,vec.thetaH.max, xlab="k", ylab="Fay and Wu's H",col="blue",ylim=range(c(vec.thetaH.min, vec.thetaH.max)),main=paste("n =",n,", S =",S,", j =",j))
-  points(vec.k,vec.thetaH.min,col="red") 
+  plot(vec.k,vec.thetaH.max, xlab="k", ylab="Fay and Wu's H",col="blue",
+       type='l',lwd=2,ylim=range(c(vec.thetaH.min, vec.thetaH.max)),main=paste("n =",n,", S =",S,", j =",j))
+  lines(vec.k,vec.thetaH.min,col="red",lwd=2) #ignore for now
+  if(plot_points == TRUE){
+    source('MS-Simulations.R')
+    runCommand(R, n, S,R, theta, f = 'FuLi')
+    df = read.table("output.txt",header=FALSE)
+    points(as.vector(df$V1[-1]),as.vector(df$V2[-1]),col="black",pch="o")
+  }
 }
 
-plot_Fay_H_k(n,S,j)
+plot_Fay_H_k(n,S,j, R, plot_points = TRUE)
 
 ## Let's plot dependence of
 ## Fay and Wu's H on S ##
@@ -248,27 +255,29 @@ f.TajimaD.min <- function(n,S,j,k) {
 
 ## Let's plot dependence of
 ## Tajima's D on frequency of singletons, k ##
-plot_tajima_D_k = function(n,S,j){
+plot_tajima_D_k = function(R,n,S,j,theta,plot_points = FALSE){
   vec.k = c(0:S)
   vec.TajimaD.max = f.TajimaD.max(n,S,j,vec.k)
   vec.TajimaD.min = f.TajimaD.min(n,S,j,vec.k)   
-  plot(vec.k/S,vec.TajimaD.max, xlab="Frequency of Derived Singletons", ylab="Tajima's D",col="blue",ylim=range(c(vec.TajimaD.max, vec.TajimaD.min)),main=paste("n =",n,", S =",S),pch="o")
-  lines(vec.k/S, vec.TajimaD.max, xlim=range(vec.k), ylim=range(vec.TajimaD.max), col="blue4",lwd=2,pch=16)
-  points(vec.k/S,vec.TajimaD.min,col="red",pch="o") 
-  lines(vec.k/S, vec.TajimaD.min, xlim=range(vec.k), ylim=range(vec.TajimaD.min), col="darkred",lwd=2,pch=16)
-<<<<<<< HEAD
-}
-plot_tajima_D_k(n,S,j)
-plot_tajima_D_k(50,100,1)
-=======
-  
+  plot(vec.k/S,vec.TajimaD.max, xlab="Frequency of Derived Singletons", ylab="Tajima's D",col="blue",
+       type='l',lwd=2,ylim=range(c(vec.TajimaD.max, vec.TajimaD.min)),main=paste("n =",n,", S =",S),pch="o")
+  #lines(vec.k/S, vec.TajimaD.max, xlim=range(vec.k), ylim=range(vec.TajimaD.max), col="blue4",lwd=2,pch=16)
+  #points(vec.k/S,vec.TajimaD.min,col="red",pch="o") 
+  lines(vec.k/S, vec.TajimaD.min, xlim=range(vec.k), ylim=range(vec.TajimaD.min), col="red",lwd=2,pch=16)
+  if(plot_points == TRUE){
+    runCommand(R,n,S,theta,f = 'TajD')
+    df = read.table("output.txt",header=FALSE)
+    points(as.vector(df$V1[-1]),as.vector(df$V2[-1]),col="black",pch="o")
   }
-n = 50 
-S = 10 
-j = 1
-plot_tajima_D_k(n,S,j)
+}
+plot_tajima_D_k(R,n,S,j,theta,TRUE)
+plot_tajima_D_k(50,100,1)
 
->>>>>>> fdd3658f4f78cf4714be3c5c9b3d023eb240025b
+#n = 50 
+#S = 10 
+#j = 1
+#plot_tajima_D_k(n,S,j)
+
 ## Let's plot dependence of
 ## Tajima's D on S ##
 plot_tajima_D_S = function(n,S,j,k){
@@ -322,17 +331,24 @@ f.FuLiF.min <- function(n,S,j,k) {
 
 ## Let's plot dependence of
 ## Fu and Li's F on frequency of singletons \xi_1 ##
-plot_Fu_s = function(n,S,j){
+plot_Fu_k = function(R,n,S,j,theta=5 ,plot_points = FALSE){
   vec.k = c(0:S)
   vec.FuLiF.max = f.FuLiF.max(n,S,j,vec.k)
   vec.FuLiF.min = f.FuLiF.min(n,S,j,vec.k)   
-  plot(vec.k/S,vec.FuLiF.max, xlab="Frequency of Derived Singletons", ylab="Fu and Li's F",col="blue",ylim=range(c(vec.FuLiF.min, vec.FuLiF.max)),main=paste("n =",n,", S =",S),pch="o")
-  lines(vec.k/S, vec.FuLiF.max, xlim=range(vec.k/S), ylim=range(vec.FuLiF.max), col="blue4",lwd=2,pch=16)
-  points(vec.k/S,vec.FuLiF.min,col="red",pch="o") 
-  lines(vec.k/S, vec.FuLiF.min, xlim=range(vec.k/S), ylim=range(vec.FuLiF.min), col="darkred",lwd=2,pch=16)
+  plot(vec.k/S,vec.FuLiF.max, xlab="Frequency of Derived Singletons", ylab="Fu and Li's F",col="blue",
+       type='l',lwd=2,ylim=range(c(vec.FuLiF.min, vec.FuLiF.max)),main=paste("n =",n,", S =",S),pch="o")
+  #lines(vec.k/S, vec.FuLiF.max, xlim=range(vec.k/S), ylim=range(vec.FuLiF.max), col="blue",
+        #lwd=2,pch=16)
+  #points(vec.k/S,vec.FuLiF.min,col="red",pch="o") 
+  lines(vec.k/S, vec.FuLiF.min, xlim=range(vec.k/S), ylim=range(vec.FuLiF.min), col="red",lwd=2,pch=16)
+  if(plot_points == TRUE){
+    runCommand(R,n,S,theta,f = 'FuLi')
+    df = read.table("output.txt",header=FALSE)
+    points(as.vector(df$V1[-1]),as.vector(df$V2[-1]),col="black",pch="o")
+  }
 }
 
-plot_Fu_s(n,S,j)
+plot_Fu_k(R,n,S,j,theta, plot_points = TRUE)
 
 
 ## Let's plot dependence of

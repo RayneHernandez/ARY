@@ -80,5 +80,7 @@ points(k.vec,diffStat.vec,col="black",pch="o")
 #====================
 df = read.table("sfs.txt",header=FALSE)
 #=====================
-df = read.table("fuliF-bottleneckN500S100.txt",header=FALSE)
+# df = read.table("fuliF-bottleneckN500S100.txt",header=FALSE) # ignore for now
+## These two will plot data points 
+df = read.table("output.txt",header=FALSE)
 points(as.vector(df$V1[-1]),as.vector(df$V2[-1]),col="black",pch="o")
