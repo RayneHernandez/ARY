@@ -52,15 +52,21 @@ S = 100 # equals to "-s" in system formula
 
 ## (Optional) LET'S CREATE A DATA FRAME TO STORE SIMULATION OUTPUT! ## 
 # df = data.frame(matrix(ncol=2,nrow=R,dimnames=list(c(),c("k","diffStat"))),stringsAsFactors=F)
-getCommand <- function(n, S, theta) {
-  result = paste("./ms", n, "1 -t", theta, "-s", S, '-eN 0.2',theta, '> sfs.txt', sep = " ")
+getCommand <- function(n, S, theta, scenario = 'neutral', ...) {
+  if (scenario == 'neutral') {
+    result = paste("./ms", n, "1 -t", theta, "-s", S, "> sfs.txt", sep = " ")
+  } else if (scenario == 'expansion') {
+    result = paste("./ms", n, "1 -t", theta, "-s", S, "-G 6.93 -eG 0.2 0.0", "> sfs.txt",sep = " ")
+  } else if (scenario == 'bottleneck') {
+    result = paste("./ms", n, "1 -t", theta, "-s", S, "-eN 0.2 5.0", "> sfs.txt", sep = " ")
+  }
   result
 }
 
-runCommand <- function(R, n, S, theta, f = 'FuLi', ...) {
+runCommand <- function(R, n, S, theta, f = 'FuLi', scenario = 'neutral',...) {
   k.vec = c()
   diffStat.vec = c()
-  command = getCommand(n, S, theta)
+  command = getCommand(n, S, theta, scenario)
   for (r in 1:R) { 
     system(command)
     system("sed '1,7d' sfs.txt > sfs-modified.txt")

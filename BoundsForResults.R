@@ -62,7 +62,7 @@ k=5
 # This has been changed to a function
 # =====================================================================================================
 ###========== PLOTSTATISTIC ===========###
-plot_tajima_Pi_k = function(R,n,S,j,theta,plot_points=FALSE){
+plot_tajima_Pi_k = function(R,n,S,j,theta,scenario,plot_points=FALSE, ...){
   vec.k = c(0:S) 
   vec.thetaPi.max = f.thetaPi.max(n,S,j,vec.k)
   vec.thetaPi.min = f.thetaPi.min(n,S,j,vec.k) 
@@ -72,44 +72,29 @@ plot_tajima_Pi_k = function(R,n,S,j,theta,plot_points=FALSE){
   #points(vec.k/S,vec.thetaPi.min,col="red",pch="o") 
   lines(vec.k/S, vec.thetaPi.min, xlim=range(vec.k), ylim=range(vec.thetaPi.min), col="red",lwd=2,pch=16)
   if(plot_points == TRUE){
-    runCommand(R, n, S,theta, f = 'TajPi')
+    runCommand(R, n, S,theta, f='TajPi', scenario)
     df = read.table("output.txt",header=FALSE)
     points(as.vector(df$V1[-1]),as.vector(df$V2[-1]),col="black",pch="o")
   }
 }
 
-plot_tajima_Pi_k(R,n,S,j,theta,TRUE)
+plot_tajima_Pi_k(R,n,S,j,theta,scenario = "bottleneck",plot_points = TRUE)
 # =====================================================================================================
 
 ## Let's plot dependence of
 ## Tajima's Pi on n ##
-n.lower=3
-n.upper=50
+#n.lower=3
+#n.upper=50
 
 plot_tajima_Pi_n = function(n.lower, n.upper,S,j, k){
   vec.n = c(n.lower:n.upper)
   vec.thetaPi.max=c(1:length(vec.n))
-  
+  vec.thetaPi.min=c(1:length(vec.n))
   for (i in 1:length(vec.n)) {
-    vec.thetaPi.max[i]=f.thetaPi.max(i+n.lower-1,S,j,k) 
-  }
-#<<<<<<< HEAD
-  plot(vec.n,vec.thetaPi.max, xlab="No. of Sampled Individuals", ylab="Tajima's Pi",col="purple",ylim=c(0,70),main=paste("k =",k,", S =",S),pch="o")
-  lines(vec.n, vec.thetaPi.max, xlim=range(vec.n), ylim=range(vec.thetaPi.max), col="darkslateblue",lwd=2,pch=16)
-#<<<<<<< HEAD
-  vec.thetaPi.min=c(1:length(vec.n))
-#=======
-  print(vec.n)
-  vec.thetaPi.min=c(1:length(vec.n))
-  print(vec.thetaPi.min)
-#=======
-  vec.thetaPi.min=c(1:length(vec.n))
-#>>>>>>> f1b2206f7c214885d6c6e1e2b0f7ea35f453cc4c
-#>>>>>>> fdd3658f4f78cf4714be3c5c9b3d023eb240025b
-  for (i in 1:length(vec.n)) {
+    vec.thetaPi.max[i]=f.thetaPi.max(i+n.lower-1,S,j,k)
     vec.thetaPi.min[i]=f.thetaPi.min(i+n.lower-1,S,j,k) 
   }
-  plot(vec.n,vec.thetaPi.max, xlab="No. of Sampled Individuals", ylab="Tajima's Pi",col="purple",ylim=range(c(vec.thetaPi.min, vec.thetaPi.max)),main=paste("k =",k,", S =",S),pch="o")
+  plot(vec.n,vec.thetaPi.max, xlab="No. of Sampled Individuals", ylab=expression("Tajima's"~pi),col="purple",ylim=range(c(vec.thetaPi.min, vec.thetaPi.max)),main=paste("k =",k,", S =",S),pch="o")
   lines(vec.n, vec.thetaPi.max, xlim=range(vec.n), ylim=range(vec.thetaPi.max), col="darkslateblue",lwd=2,pch=16)
   points(vec.n,vec.thetaPi.min,col="green",pch="o") 
   lines(vec.n, vec.thetaPi.min, xlim=range(vec.n), ylim=range(vec.thetaPi.min), col="darkgreen",lwd=2,pch=16)
@@ -122,95 +107,95 @@ plot_tajima_Pi_n(n.lower,n.upper,S,j, k)
 ## Tajima's Pi on S ##
 
 
-plot_tajima_Pi_S = function(n, S, k, j){
+plot_tajima_Pi_S = function(n, S,j,k){
   vec.S = seq(from=k,to=100,by=1) 
   vec.thetaPi.max = f.thetaPi.max(n,vec.S,j,k)
   vec.thetaPi.min = f.thetaPi.min(n,vec.S,j,k)
-  plot(vec.S,vec.thetaPi.max, xlab="No. of Segregating Sites", ylab="Tajima's Pi",col="orange",ylim=range(c(vec.thetaPi.min, vec.thetaPi.max)),main=paste("k =",k,", n =",n),pch="o")
+  plot(vec.S,vec.thetaPi.max, xlab="No. of Segregating Sites", ylab=expression("Tajima's"~pi),col="orange",ylim=range(c(vec.thetaPi.min, vec.thetaPi.max)),main=paste("k =",k,", n =",n),pch="o")
   lines(vec.S, vec.thetaPi.max, xlim=range(vec.S), ylim=range(vec.thetaPi.max), col="orange4",lwd=2,pch=16)
   points(vec.S,vec.thetaPi.min,col="pink",pch="o") 
   lines(vec.S, vec.thetaPi.min, xlim=range(vec.S), ylim=range(vec.thetaPi.min), col="pink4",lwd=2,pch=16)
 }
 
-plot_tajima_Pi_S(n, S, k, j)
+plot_tajima_Pi_S(n, S, j,k)
 
 # =====================================================================================================
 
 ####
 
-#### Fay and Wu's H ####
-#### DO NOT RUN THIS PART IN CONJUNCTION 
-#### with Tajima's Pi code above! ####
-
-f.max_Fay <- function(n,j) { # Helper function: get upper bound
-  f.max.out = 0 
-  for (i in 1:(n-1)) {
-    if (i!=j & i*i > f.max.out) {
-      f.max.out = i*i
-    }
-  }
-  return(f.max.out)
-}
-
-f.min_Fay <- function(n,j) { # Helper function: get lower bound
-  f.min.out = n * n 
-  for (i in 1:(n-1)) {
-    if (i!=j & i*i < f.min.out) {
-      f.min.out = i*i
-    }
-  }
-  return(f.min.out)
-}
-
-### Upper Bound ###
-f.thetaH.max <- function(n,S,j,k) { 
-  (k*j*j + (S-k)*f.max_Fay(n,j)) / choose(n,2)
-}
-
-### Lower Bound ###
-f.thetaH.min <- function(n,S,j,k) {
-  (k*j*j + (S-k)*f.min_Fay(n,j)) / choose(n,2)
-}
-
-### Example Plots ###
-##
-n=50
-S=20
-j=1
-
-## Let's plot dependence of
-## Fay and Wu's H on k ##
-plot_Fay_H_k = function(n,S,j, R, theta = 5, plot_points = FALSE){
-  vec.k = c(0:S)
-  vec.thetaH.max = f.thetaH.max(n,S,j,vec.k)
-  vec.thetaH.min = f.thetaH.min(n,S,j,vec.k)
-  plot(vec.k,vec.thetaH.max, xlab="k", ylab="Fay and Wu's H",col="blue",
-       type='l',lwd=2,ylim=range(c(vec.thetaH.min, vec.thetaH.max)),main=paste("n =",n,", S =",S,", j =",j))
-  lines(vec.k,vec.thetaH.min,col="red",lwd=2) #ignore for now
-  if(plot_points == TRUE){
-    source('MS-Simulations.R')
-    runCommand(R, n, S,R, theta, f = 'FuLi')
-    df = read.table("output.txt",header=FALSE)
-    points(as.vector(df$V1[-1]),as.vector(df$V2[-1]),col="black",pch="o")
-  }
-}
-
-plot_Fay_H_k(n,S,j, R, plot_points = TRUE)
-#============================================
-
-## Let's plot dependence of
-## Fay and Wu's H on S ##
-plot_Fay_H_S = function(n,S,j,k){
-  vec.S = seq(from=k,to=100,by=1) 
-  vec.thetaH.max = f.thetaH.max(n,vec.S,j,k)
-  vec.thetaH.min = f.thetaH.min(n,vec.S,j,k)
-  plot(vec.S,vec.thetaH.max, xlab="S", ylab="Fay and Wu's H",col="purple",ylim=range(c(vec.thetaH.min, vec.thetaH.max)),main=paste("n =",n,", j =",j,", k =",k))
-  lines(vec.S, vec.thetaH.max, xlim=range(vec.S), ylim=range(vec.thetaH.max), col="darkslateblue",lwd=2,pch=16)
-  points(vec.S,vec.thetaH.min,col="green") 
-  lines(vec.S, vec.thetaH.min, xlim=range(vec.S), ylim=range(vec.thetaH.min), col="darkgreen",lwd=2,pch=16)
-}
-
-plot_Fay_H_S(n,S,j,k)
+# #### Fay and Wu's H ####
+# #### DO NOT RUN THIS PART IN CONJUNCTION 
+# #### with Tajima's Pi code above! ####
+# 
+# f.max_Fay <- function(n,j) { # Helper function: get upper bound
+#   f.max.out = 0 
+#   for (i in 1:(n-1)) {
+#     if (i!=j & i*i > f.max.out) {
+#       f.max.out = i*i
+#     }
+#   }
+#   return(f.max.out)
+# }
+# 
+# f.min_Fay <- function(n,j) { # Helper function: get lower bound
+#   f.min.out = n * n 
+#   for (i in 1:(n-1)) {
+#     if (i!=j & i*i < f.min.out) {
+#       f.min.out = i*i
+#     }
+#   }
+#   return(f.min.out)
+# }
+# 
+# ### Upper Bound ###
+# f.thetaH.max <- function(n,S,j,k) { 
+#   (k*j*j + (S-k)*f.max_Fay(n,j)) / choose(n,2)
+# }
+# 
+# ### Lower Bound ###
+# f.thetaH.min <- function(n,S,j,k) {
+#   (k*j*j + (S-k)*f.min_Fay(n,j)) / choose(n,2)
+# }
+# 
+# ### Example Plots ###
+# ##
+# n=50
+# S=20
+# j=1
+# 
+# ## Let's plot dependence of
+# ## Fay and Wu's H on k ##
+# plot_Fay_H_k = function(n,S,j, R, theta = 5, plot_points = FALSE){
+#   vec.k = c(0:S)
+#   vec.thetaH.max = f.thetaH.max(n,S,j,vec.k)
+#   vec.thetaH.min = f.thetaH.min(n,S,j,vec.k)
+#   plot(vec.k,vec.thetaH.max, xlab="k", ylab="Fay and Wu's H",col="blue",
+#        type='l',lwd=2,ylim=range(c(vec.thetaH.min, vec.thetaH.max)),main=paste("n =",n,", S =",S,", j =",j))
+#   lines(vec.k,vec.thetaH.min,col="red",lwd=2) #ignore for now
+#   if(plot_points == TRUE){
+#     source('MS-Simulations.R')
+#     runCommand(R, n, S,R, theta, f = 'FuLi')
+#     df = read.table("output.txt",header=FALSE)
+#     points(as.vector(df$V1[-1]),as.vector(df$V2[-1]),col="black",pch="o")
+#   }
+# }
+# 
+# plot_Fay_H_k(n,S,j, R, plot_points = TRUE)
+# #============================================
+# 
+# ## Let's plot dependence of
+# ## Fay and Wu's H on S ##
+# plot_Fay_H_S = function(n,S,j,k){
+#   vec.S = seq(from=k,to=100,by=1) 
+#   vec.thetaH.max = f.thetaH.max(n,vec.S,j,k)
+#   vec.thetaH.min = f.thetaH.min(n,vec.S,j,k)
+#   plot(vec.S,vec.thetaH.max, xlab="S", ylab="Fay and Wu's H",col="purple",ylim=range(c(vec.thetaH.min, vec.thetaH.max)),main=paste("n =",n,", j =",j,", k =",k))
+#   lines(vec.S, vec.thetaH.max, xlim=range(vec.S), ylim=range(vec.thetaH.max), col="darkslateblue",lwd=2,pch=16)
+#   points(vec.S,vec.thetaH.min,col="green") 
+#   lines(vec.S, vec.thetaH.min, xlim=range(vec.S), ylim=range(vec.thetaH.min), col="darkgreen",lwd=2,pch=16)
+# }
+# 
+# plot_Fay_H_S(n,S,j,k)
 
 ###########################################
 ########## Difference Statistics ##########
@@ -265,7 +250,7 @@ f.TajimaD.min <- function(n,S,j,k) {
 ## Let's plot dependence of
 ## Tajima's D on frequency of singletons, k ##
 ###========== PLOTSTATISTIC ===========###
-plot_tajima_D_k = function(R,n,S,j,theta,plot_points = FALSE){
+plot_tajima_D_k = function(R,n,S,j,theta,scenario,plot_points = FALSE,...){
   vec.k = c(0:S)
   vec.TajimaD.max = f.TajimaD.max(n,S,j,vec.k)
   vec.TajimaD.min = f.TajimaD.min(n,S,j,vec.k)   
@@ -275,12 +260,12 @@ plot_tajima_D_k = function(R,n,S,j,theta,plot_points = FALSE){
   #points(vec.k/S,vec.TajimaD.min,col="red",pch="o") 
   lines(vec.k/S, vec.TajimaD.min, xlim=range(vec.k), ylim=range(vec.TajimaD.min), col="red",lwd=2,pch=16)
   if(plot_points == TRUE){
-    runCommand(R,n,S,theta,f = 'TajD')
+    runCommand(R,n,S,theta,f = 'TajD',scenario)
     df = read.table("output.txt",header=FALSE)
     points(as.vector(df$V1[-1]),as.vector(df$V2[-1]),col="black",pch="o")
   }
 }
-plot_tajima_D_k(R,n,S,j,theta,TRUE)
+plot_tajima_D_k(R,n,S,j,theta,scenario,TRUE)
 
 #################====================
 
@@ -311,11 +296,9 @@ n.upper=50
 plot_tajima_D_n = function(n.lower, n.upper, S,j,k){
   vec.n = c(n.lower:n.upper)
   vec.TajimaD.max=c(1:length(vec.n))
-  for (i in 1:length(vec.n)) {
-    vec.TajimaD.max[i]=f.TajimaD.max(i+n.lower-1,S,j,k) 
-  }
   vec.TajimaD.min=c(1:length(vec.n))
   for (i in 1:length(vec.n)) {
+    vec.TajimaD.max[i]=f.TajimaD.max(i+n.lower-1,S,j,k)
     vec.TajimaD.min[i]=f.TajimaD.min(i+n.lower-1,S,j,k) 
   }
   plot(vec.n,vec.TajimaD.max, xlab="No. of Sampled Individuals", ylab="Tajima's D",col="purple",xlim=range(vec.n), ylim=range(c(vec.TajimaD.max[!is.na(vec.TajimaD.max)], vec.TajimaD.min[!is.na(vec.TajimaD.max)])),main=paste("k =",k,", S =",S),pch="o")
@@ -343,7 +326,7 @@ f.FuLiF.min <- function(n,S,j,k) {
 ## Let's plot dependence of
 ## Fu and Li's F on frequency of singletons \xi_1 ##
 ###========== PLOTSTATISTIC ===========###
-plot_Fu_k = function(R,n,S,j,theta=5 ,plot_points = FALSE){
+plot_Fu_li_k = function(R,n,S,j,theta=5,scenario ="neutral", plot_points = FALSE,...){
   vec.k = c(0:S)
   vec.FuLiF.max = f.FuLiF.max(n,S,j,vec.k)
   vec.FuLiF.min = f.FuLiF.min(n,S,j,vec.k)   
@@ -354,32 +337,59 @@ plot_Fu_k = function(R,n,S,j,theta=5 ,plot_points = FALSE){
   #points(vec.k/S,vec.FuLiF.min,col="red",pch="o") 
   lines(vec.k/S, vec.FuLiF.min, xlim=range(vec.k/S), ylim=range(vec.FuLiF.min), col="red",lwd=2,pch=16)
   if(plot_points == TRUE){
-    runCommand(R,n,S,theta)
+    runCommand(R,n,S,theta,f = 'FuLi',scenario)
     df = read.table("output.txt",header=FALSE)
     points(as.vector(df$V1[-1]),as.vector(df$V2[-1]),col="black",pch="o")
   }
 }
 
-plot_Fu_k(R,n,S,j,theta, plot_points = TRUE)
+plot_Fu_li_k(R,n,S,j,theta,scenario,plot_points = TRUE)
+
+######### MEGA FUNCTIONS #######
 #=============================================
 # This section is used to plot the statistic 
-plot_statistic <- function(fun = 'plot_Fu_k', R ,n, S,j, theta ,plot_points = FALSE, ...){
-  if(fun == 'plot_Fu_k'){
-    plot_Fu_k(R,n,S,j,theta, plot_points)
-  } else if (fun == 'plot_tajima_Pi_k'){
-    print(paste('R',R))
-    plot_tajima_Pi_k(R , n , S , j , theta, plot_points)
-  } else if(fun == 'plot_tajima_D_k'){
-    plot_tajima_D_k(R,n,S,j,theta,plot_points)
+plot_statistic <- function(f = 'FuLi', R ,n, S,j, theta , scenario = 'neutral',
+                           plot_points = FALSE, ...){
+  if(f == 'FuLi'){
+    plot_Fu_li_k(R,n,S,j,theta,scenario,plot_points)
+  } else if (f == 'TajPi'){
+    plot_tajima_Pi_k(R , n , S , j , theta,scenario,plot_points)
+  } else if(f == 'TajD'){
+    plot_tajima_D_k(R,n,S,j,theta,scenario,plot_points)
   }
 }
 
-plot_statistic('plot_tajima_Pi_k', R = 1000 ,n = 500,S = 100,j = 1, theta=5, plot_points = TRUE)
+plot_statistic('TajPi', R = 100 ,n = 500,S = 100,j = 1, theta=5, scenario,plot_points = TRUE)
+#=============================================
+# This section is used to plot functions depending on no. of sampled individuals, n
+plot_n <- function(f= "FuLi",n.lower,n.upper, S,j,k, ...){
+  if(f == 'FuLi'){
+    plot_Fu_li_n(n.lower,n.upper,S,j,k)
+  } else if (f == 'TajPi'){
+    plot_tajima_Pi_n(n.lower,n.upper,S,j,k)
+  } else if(f == 'TajD'){
+    plot_tajima_D_n(n.lower,n.upper,S,j,k)
+  }
+}
+k = 5
+plot_n("FuLi", n.lower,n.upper,S,j,k)
+#=============================================
+# This section is used to plot functions depending on no. of segregating sites, S
+plot_S <- function(f = 'FuLi', n, S,j,k,...){
+  if(f == 'FuLi'){
+    plot_Fu_li_S(n,S,j,k)
+  } else if (f == 'TajPi'){
+    plot_tajima_Pi_S(n,S,j,k)
+  } else if(f == 'TajD'){
+    plot_tajima_D_S(n,S,j,k)
+  }
+}
+
 #=============================================
 
 ## Let's plot dependence of
 ## Fu and Li's F on S ##
-plot_Fu_li_S = function(n,S,j,k){
+plot_Fu_li_S = function(n,S,j,k,...){
   vec.S = seq(from=k,to=200,by=1) 
   vec.FuLiF.max = f.FuLiF.max(n,vec.S,j,k)
   vec.FuLiF.min = f.FuLiF.min(n,vec.S,j,k)
@@ -394,16 +404,14 @@ plot_Fu_li_S(n,S,j,k)
 
 ## Let's plot dependence of
 ## Fu and Li's F on n ##
-plot_Fu_li_n = function(n,S,j,k){
-  n.lower=3
-  n.upper=100
+plot_Fu_li_n = function(n.lower,n.upper,S,j,k,...){
+  # n.lower=3
+  # n.upper=100
   vec.n = c(n.lower:n.upper)
   vec.FuLiF.max=c(1:length(vec.n))
-  for (i in 1:length(vec.n)) {
-    vec.FuLiF.max[i]=f.FuLiF.max(i+n.lower-1,S,j,k) 
-  }
   vec.FuLiF.min=c(1:length(vec.n))
   for (i in 1:length(vec.n)) {
+    vec.FuLiF.max[i]=f.FuLiF.max(i+n.lower-1,S,j,k)
     vec.FuLiF.min[i]=f.FuLiF.min(i+n.lower-1,S,j,k) 
   }
   plot(vec.n,vec.FuLiF.max, xlab="No. of Sampled Individuals", ylab="Fu and Li's F",col="purple",xlim=range(vec.n), ylim=range(c(vec.FuLiF.min, vec.FuLiF.max)),main=paste("k =",k,", S =",S),pch="o")
@@ -412,5 +420,5 @@ plot_Fu_li_n = function(n,S,j,k){
   lines(vec.n, vec.FuLiF.min, xlim=range(vec.n), ylim=range(vec.FuLiF.min), col="darkgreen",lwd=2,pch=16)
 }
 
-plot_Fu_li_n(n,S,j,k)
+plot_Fu_li_n(n.lower,n.upper,S,j,k)
 
