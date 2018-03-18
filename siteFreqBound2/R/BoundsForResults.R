@@ -54,11 +54,11 @@ S = 100 # equals to "-s" in system formula
 getCommand <- function(n, S, theta, scenario = 'neutral', ...) {
   # print(getwd())
   if (scenario == 'neutral') {
-    result = paste("cd siteFreqBounds/src/msdir && ", "./ms", n, "1 -t", theta, "-s", S, "> sfs.txt", "&& cp sfs.txt ../../../", sep = " ")
+    result = paste("cd siteFreqBound2/src/msdir && ", "./ms", n, "1 -t", theta, "-s", S, "> sfs.txt", "&& cp sfs.txt ../../../", sep = " ")
   } else if (scenario == 'expansion') {
-    result = paste("cd siteFreqBounds/src/msdir && ", "./ms", n, "1 -t", theta, "-s", S, "-G 6.93 -eG 0.2 0.0", "> sfs.txt", "&& cp sfs.txt ../../../", sep = " ")
+    result = paste("cd siteFreqBound2/src/msdir && ", "./ms", n, "1 -t", theta, "-s", S, "-G 6.93 -eG 0.2 0.0", "> sfs.txt", "&& cp sfs.txt ../../../", sep = " ")
   } else if (scenario == 'bottleneck') {
-    result = paste("cd siteFreqBounds/src/msdir && ", "./ms", n, "1 -t", theta, "-s", S, "-eN 0.2 5.0", "> sfs.txt", "&& cp sfs.txt ../../../", sep = " ")
+    result = paste("cd siteFreqBound2/src/msdir && ", "./ms", n, "1 -t", theta, "-s", S, "-eN 0.2 5.0", "> sfs.txt", "&& cp sfs.txt ../../../", sep = " ")
   }
   # print(result)
   result

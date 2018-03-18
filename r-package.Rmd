@@ -8,25 +8,28 @@ This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute
 Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
 
 ```{r}
-pkgName = "siteFreqBound3"
+pkgName = "siteFreqBound2"
 
-myself1 <- utils::person(given = "Alan", email = 'alanaw1@stanford.edu', role = 'cre'))
-myself2 <- utils::person(given = "Rayne", email = 'rayne@stanford.edu', role = 'cre'))
-myself3 <- utils::person(given = "Younes", email = 'younes@stanford.edu', role = 'cre'))
+# Note: need to figure out how to create c(Author1,Author2,Author3) properly
+#myself <- c(utils::person(given = "Alan", email = 'alanaw1@stanford.edu', role = 'cre'),
+             #utils::person(given = "Rayne", email = 'rayne@stanford.edu', role = 'cre'),
+             #utils::person(given = "Younes", email = 'younes@stanford.edu', role = 'cre'))
 
 
 ## My options for dev
-myself_at_r <- paste0(
-    "person(given = ",
-    deparse(myself$given),
-    ", family = ",
-    deparse(myself$family),
-    ", role = ",
-    deparse(myself$role),
-    ", email = ",
-    deparse(myself$email),
+#myself_at_r <- paste0(
+    #"person(given = ",
+    #deparse(myself$given),
+    #", family = ",
+    #deparse(myself$family),
+    #", role = ",
+    #deparse(myself$role),
+    #", email = ",
+    #deparse(myself$email),
     ")"
-)
+#)
+
+myself_at_r <- 'c(person("Alan","Aw", email="alanaw1@stanford.edu",role="cre"),person("Rayne","Hernandez", email="rayne@stanford.edu",role="aut"),person("Younes","Bensouda Mourri", email="younes@stanford.edu",role="aut"))'
 
 options(
     devtools.desc.author = myself_at_r,
@@ -36,11 +39,12 @@ options(
 
 ``` {r,eval=TRUE}
 devtools::create(path = pkgName, rstudio = FALSE) # create new path / folder
+devtools::use_rcpp(pkg=pkgName)
 library(readr)
 descriptionFilePath <- paste(pkgName, "DESCRIPTION", sep = .Platform$file.sep)
 description <- readr::read_lines(descriptionFilePath)
-description[2] <- "Title: Bounds on Functions of the Site Frequency Spectrum"
-description[5] <- paste("Description: A package that allows user to plot model-independent bounds on functions of the site frequency spectrum (SFS).")
+description[2] <- "Title: Bounds on Functions of the Site Frequency Spectrum" # modifies the DESCRIPTION title
+description[5] <- paste("Description: A package that allows user to plot model-independent bounds on functions of the site frequency spectrum (SFS).") # modifies ... 
 readr::write_lines(x = description, path = descriptionFilePath)
 ```
 
