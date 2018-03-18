@@ -1,0 +1,9 @@
+Package: siteFreqBound2
+Title: Bounds on Functions of the Site Frequency Spectrum
+Version: 0.0.0.9000
+Authors@R: person(given = c("Alan", "Rayne", "Younes"), family = c("Aw", "Hernandez", "Bensouda Mourri"), role = c("aut", "cre"), email = c("alanaw1@stanford.edu", "rayne@stanford.edu", "younes@stanford.edu"), person(given = c("Alan", "Rayne", "Younes"), family = c("Aw", "Hernandez", "Bensouda Mourri"), role = c("aut", "cre"), email = ))
+Description: A package that allows user to plot model-independent bounds on functions of the site frequency spectrum (SFS).
+Depends: R (>= 3.4.3)
+License: GPL (>= 2)
+Encoding: UTF-8
+LazyData: true

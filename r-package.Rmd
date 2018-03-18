@@ -1,0 +1,68 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+pkgName = "siteFreqBound3"
+
+myself1 <- utils::person(given = "Alan", email = 'alanaw1@stanford.edu', role = 'cre'))
+myself2 <- utils::person(given = "Rayne", email = 'rayne@stanford.edu', role = 'cre'))
+myself3 <- utils::person(given = "Younes", email = 'younes@stanford.edu', role = 'cre'))
+
+
+## My options for dev
+myself_at_r <- paste0(
+    "person(given = ",
+    deparse(myself$given),
+    ", family = ",
+    deparse(myself$family),
+    ", role = ",
+    deparse(myself$role),
+    ", email = ",
+    deparse(myself$email),
+    ")"
+)
+
+options(
+    devtools.desc.author = myself_at_r,
+    devtools.desc.license = "GPL (>= 2)"
+)
+```
+
+``` {r,eval=TRUE}
+devtools::create(path = pkgName, rstudio = FALSE) # create new path / folder
+library(readr)
+descriptionFilePath <- paste(pkgName, "DESCRIPTION", sep = .Platform$file.sep)
+description <- readr::read_lines(descriptionFilePath)
+description[2] <- "Title: Bounds on Functions of the Site Frequency Spectrum"
+description[5] <- paste("Description: A package that allows user to plot model-independent bounds on functions of the site frequency spectrum (SFS).")
+readr::write_lines(x = description, path = descriptionFilePath)
+```
+
+``` {r,eval=TRUE}
+# devtools::use_package("ggplot2", type = "Imports", pkg = pkgName)
+devtools::document(pkg = pkgName)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+```{r}
+devtools::install(pkg = pkgName)
+```
+
+```{r}
+devtools::check(pkg = pkgName)
+```
+```{r}
+library(siteFreqBound)
+siteFreqBound::plot_statistic('FuLi', 100 ,500, 100,1, 5.0 , 'neutral',TRUE)
+```
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
