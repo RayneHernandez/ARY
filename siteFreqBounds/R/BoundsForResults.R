@@ -1,12 +1,21 @@
-####### R code for Theta Bounds and Difference Statistics #######
-####### Version 2.0: (8/30/2017)                          #######
-####### By Alan Aw                                        #######
+####### R code for Theta Bounds and Difference Statistics   #######
+####### Version 3.0: (3/17/2018)                            #######
+####### By Alan Aw, Rayne Hernandez, Younes Bensouda Mourri #######
 
-##### Bounds are mathematical, so 
-##### work for any mutation model 
+##### Bounds are mathematical and depend only on data, so 
+##### works for any parametric molecular evolutionary model 
 ##### (infinite sites, infinite alleles) #####
 
 #================================================================================================
+
+#' Helper Function computes truncated harmonic sum
+#' 
+#' Comment
+#' 
+#' @param n where to truncate the sum
+#' @return the truncated harmonic sum
+#' @export
+#' @examples
 
 little.a <- function(n) {
   harm.sum = 0
@@ -15,6 +24,15 @@ little.a <- function(n) {
   }
   return(harm.sum)
 }
+
+#' Helper Function computes truncated sum of inverse squares
+#' 
+#' Comment
+#' 
+#' @param n where to truncate the sum
+#' @return the truncated sum
+#' @export
+#' 
 
 big.a <- function(n) {
   harm.sum.square = 0
@@ -25,18 +43,52 @@ big.a <- function(n) {
 }
 
 ## For Tajima's D ## (see Simonsen, Churchill, Aquadro, 1995)
+#' Helper Function 
+#' 
+#' Comment
+#' 
+#' @param n where to truncate the sum
+#' @return the function
+#' @export
+#' 
+
 v.T <- function(n) {
   (2*(n^2+n+3)/(9*n*(n-1))-(n+2)/(little.a(n)*n) + big.a(n)/(little.a(n))^2) / (little.a(n)^2+big.a(n))
 }
+
+## For Tajima's D ## (see Simonsen, Churchill, Aquadro, 1995)
+#' Helper Function 
+#' 
+#' Comment
+#' 
+#' @param n where to truncate the sum
+#' @return the function
+#' @export
+#' 
 
 u.T <- function(n) {
   (((n+1)/(3*(n-1))-1/little.a(n))/little.a(n)) - v.T(n) 
 }
 
-## For Fu and Li's F ##
+### For Fu and Li's F ### (see Simonsen, Churchill, Aquadro, 1995)
+#' Helper Function 
+#' 
+#' Comment
+#' 
+#' @param n where to truncate the sum
+#' @return the function
+#' @export
 v.F <- function(n) {
   ((2*n^3 + 110*n^2 -255*n + 153)/(9*n^2*(n-1))+(2*(n-1)*little.a(n))/(n^2)-(8*big.a(n))/n) / (little.a(n)^2+big.a(n))
 }
+
+#' Helper Function 
+#' 
+#' Comment
+#' 
+#' @param n where to truncate the sum
+#' @return the function
+#' @export
 
 u.F <- function(n) {
   ((4*n^2+19*n+3-12*(n+1)*little.a(n+1))/(3*n*(n-1)))/little.a(n) - v.F(n)
@@ -44,25 +96,57 @@ u.F <- function(n) {
 
 ### Pre-simulation step ###
 ## HOW MANY REPS DO YOU WANT TO SIMULATE? ##
-R = 1000
-n = 500 # equals to first numeric argument in system formula
-theta = 5.0 # equals to "-t" in system formula
-S = 100 # equals to "-s" in system formula
+#R = 1000
+#n = 500 # equals to first numeric argument in system formula
+#theta = 5.0 # equals to "-t" in system formula
+#S = 100 # equals to "-s" in system formula
 
 ## (Optional) LET'S CREATE A DATA FRAME TO STORE SIMULATION OUTPUT! ##  
 # df = data.frame(matrix(ncol=2,nrow=R,dimnames=list(c(),c("k","diffStat"))),stringsAsFactors=F)
+
+#' Helper Function 
+#' 
+#' Comment
+#' 
+#' @param n comment
+#' @param S comment
+#' @param theta comment
+#' @param scenario comment
+#' @param ... comment
+#' @return the function
+#' 
+#' @export
+
 getCommand <- function(n, S, theta, scenario = 'neutral', ...) {
-  # print(getwd())
+  print(getwd())
   if (scenario == 'neutral') {
-    result = paste("cd siteFreqBound3/src/msdir && ", "./ms", n, "1 -t", theta, "-s", S, "> sfs.txt", "&& cp sfs.txt ../../../", sep = " ")
+    # result = paste("cd 00_pkg_src/siteFreqBounds/src/msdir && ", "./ms", n, "1 -t", theta, "-s", S, "> sfs.txt", "&& cp sfs.txt ../../../", sep = " ")
+    result = paste("cd siteFreqBounds/src/msdir && ", "./ms", n, "1 -t", theta, "-s", S, "> sfs.txt", "&& cp sfs.txt ../../../", sep = " ")
   } else if (scenario == 'expansion') {
-    result = paste("cd siteFreqBound3/src/msdir && ", "./ms", n, "1 -t", theta, "-s", S, "-G 6.93 -eG 0.2 0.0", "> sfs.txt", "&& cp sfs.txt ../../../", sep = " ")
+    # result = paste("cd 00_pkg_src/siteFreqBounds/src/msdir && ", "./ms", n, "1 -t", theta, "-s", S, "-G 6.93 -eG 0.2 0.0", "> sfs.txt", "&& cp sfs.txt ../../../", sep = " ")
+    result = paste("cd siteFreqBounds/src/msdir && ", "./ms", n, "1 -t", theta, "-s", S, "-G 6.93 -eG 0.2 0.0", "> sfs.txt", "&& cp sfs.txt ../../../", sep = " ")
   } else if (scenario == 'bottleneck') {
-    result = paste("cd siteFreqBounds3/src/msdir && ", "./ms", n, "1 -t", theta, "-s", S, "-eN 0.2 5.0", "> sfs.txt", "&& cp sfs.txt ../../../", sep = " ")
+    # result = paste("cd 00_pkg_src/siteFreqBounds/src/msdir && ", "./ms", n, "1 -t", theta, "-s", S, "-eN 0.2 5.0", "> sfs.txt", "&& cp sfs.txt ../../../", sep = " ")
+    result = paste("cd siteFreqBounds/src/msdir && ", "./ms", n, "1 -t", theta, "-s", S, "-eN 0.2 5.0", "> sfs.txt", "&& cp sfs.txt ../../../", sep = " ")
   }
   # print(result)
   result
 }
+
+#' Helper Function 
+#' 
+#' Comment
+#' 
+#' @param R comment
+#' @param n comment
+#' @param S comment
+#' @param theta comment
+#' @param f comment
+#' @param scenario comment
+#' @param ... comment
+#' @return the function
+#' 
+#' @export
 
 runCommand <- function(R, n, S, theta, f = 'FuLi', scenario = 'neutral',...) {
   k.vec = c()
@@ -122,17 +206,12 @@ runCommand <- function(R, n, S, theta, f = 'FuLi', scenario = 'neutral',...) {
 }  
 
 
-
-
-
-
-
 #================================================================================================
 #### Paramaters ####
-S = 100 # Segregating Sites
-n = 500 # Individuals
-j = 1 # Component of SFS, must be in [1,n-1]
-k = 5 # Value of \xi_j, must be in [0,S]
+#S = 100 # Segregating Sites
+#n = 500 # Individuals
+#j = 1 # Component of SFS, must be in [1,n-1]
+#k = 5 # Value of \xi_j, must be in [0,S]
 ####
 
 ###########################################
@@ -140,6 +219,17 @@ k = 5 # Value of \xi_j, must be in [0,S]
 ###########################################
 
 #### Tajima's Pi ####
+#' Helper Function 
+#' 
+#' Comment
+#' 
+#' @param n comment
+#' @param j comment
+#'
+#' @return the function
+#' 
+#' @export
+
 f.max <- function(n,j) { # Helper function: get upper bound
   f.max.out = 0 
   for (i in 1:(n-1)) {
@@ -149,6 +239,17 @@ f.max <- function(n,j) { # Helper function: get upper bound
   }
   return(f.max.out)
 }
+
+#' Helper Function 
+#' 
+#' Comment
+#' 
+#' @param n comment
+#' @param j comment
+#' 
+#' @return the function
+#' 
+#' @export
 
 f.min <- function(n,j) { # Helper function: get lower bound
   f.min.out = n * n 
@@ -161,29 +262,62 @@ f.min <- function(n,j) { # Helper function: get lower bound
 }
 
 ### Upper Bound ###
+#' Helper Function 
+#' 
+#' Comment
+#' 
+#' @param n comment
+#' @param S comment
+#' @param j comment
+#' @param k comment
+#' @return the function
+#' @export 
+
 f.thetaPi.max <- function(n,S,j,k) { 
   (k*j*(n-j) + (S-k)*f.max(n,j)) / choose(n,2)
 }
 
 ### Lower Bound ###
+#' Helper Function 
+#' 
+#' Comment 
+#' 
+#' @param n comment
+#' @param S comment
+#' @param j comment
+#' @param k comment
+#' @return the function
+#' @export
+
 f.thetaPi.min <- function(n,S,j,k) {
   (k*j*(n-j) + (S-k)*f.min(n,j)) / choose(n,2)
 } 
 
 ### Example Plots ###
 ## Initialize some parameters ##
-R=100
-n=500
-S=100
-j=1
-k=5
+#R=100
+#n=500
+#S=100
+#j=1
+#k=5
 
 ## Let's plot dependence of
 ## Tajima's Pi on k ##
+#' Helper Function 
+#' 
+#' Comment 
+#' @param R comment
+#' @param n comment
+#' @param S comment
+#' @param j comment
+#' @param theta comment
+#' @param scenario comment
+#' @param plot_points comment 
+#' @param ... comment
+#' @return the function
+#' 
+#' @export
 
-# This has been changed to a function
-# =====================================================================================================
-###========== PLOTSTATISTIC ===========###
 plot_tajima_Pi_k <- function(R,n,S,j,theta,scenario,plot_points=FALSE, ...){
   vec.k = c(0:S) 
   vec.thetaPi.max = f.thetaPi.max(n,S,j,vec.k)
@@ -208,6 +342,18 @@ plot_tajima_Pi_k <- function(R,n,S,j,theta,scenario,plot_points=FALSE, ...){
 # n.lower=3
 # n.upper=50
 
+#' Helper Function 
+#' 
+#' Comment
+#' 
+#' @param n.lower comment
+#' @param n.upper comment
+#' @param S comment
+#' @param j comment
+#' @param k comment
+#' @return the function
+#' @export
+
 plot_tajima_Pi_n <- function(n.lower, n.upper,S,j, k){
   vec.n = c(n.lower:n.upper)
   vec.thetaPi.max=c(1:length(vec.n))
@@ -227,9 +373,17 @@ plot_tajima_Pi_n <- function(n.lower, n.upper,S,j, k){
 
 ## Let's plot dependence of
 ## Tajima's Pi on S ##
+#' Helper Function 
+#' 
+#' Comment
+#' 
+#' @param n comment
+#' @param j comment
+#' @param k comment
+#' @return the function
+#' @export
 
-
-plot_tajima_Pi_S <- function(n, S,j,k){
+plot_tajima_Pi_S <- function(n,j,k){
   vec.S = seq(from=k,to=100,by=1) 
   vec.thetaPi.max = f.thetaPi.max(n,vec.S,j,k)
   vec.thetaPi.min = f.thetaPi.min(n,vec.S,j,k)
@@ -248,54 +402,60 @@ plot_tajima_Pi_S <- function(n, S,j,k){
 ###########################################
 
 #### Helper Functions ####
-little.a <- function(n) {
-  harm.sum = 0
-  for (i in 1:(n-1)) {
-    harm.sum = harm.sum + 1/i
-  }
-  return(harm.sum)
-}
 
-big.a <- function(n) {
-  harm.sum.square = 0
-  for (i in 1:(n-1)) {
-    harm.sum.square = harm.sum.square + 1/(i^2)
-  }
-  return(harm.sum.square)
-}
 
-### For Tajima's D ### (see Simonsen, Churchill, Aquadro, 1995)
-v.T <- function(n) {
-  (2*(n^2+n+3)/(9*n*(n-1))-(n+2)/(little.a(n)*n) + big.a(n)/(little.a(n))^2) / (little.a(n)^2+big.a(n))
-}
 
-u.T <- function(n) {
-  (((n+1)/(3*(n-1))-1/little.a(n))/little.a(n)) - v.T(n) 
-} ###
-
-### For Fu and Li's F ### (see Simonsen, Churchill, Aquadro, 1995)
-v.F <- function(n) {
-  ((2*n^3 + 110*n^2 -255*n + 153)/(9*n^2*(n-1))+(2*(n-1)*little.a(n))/(n^2)-(8*big.a(n))/n) / (little.a(n)^2+big.a(n))
-}
-
-u.F <- function(n) {
-  ((4*n^2+19*n+3-12*(n+1)*little.a(n+1))/(3*n*(n-1)))/little.a(n) - v.F(n)
-}
 #### Tajima's D ####
 
 ### Upper Bound ###
+#' Helper Function 
+#' 
+#' Comment
+#' 
+#' @param n comment
+#' @param S comment
+#' @param j comment
+#' @param k comment
+#' @return the function
+#' @export
+#' 
 f.TajimaD.max <- function(n,S,j,k) {
   return((f.thetaPi.max(n,S,j,k) - S/little.a(n)) / sqrt(u.T(n)*S + v.T(n)*S*S))
 }
 
 ### Lower Bound ###
+#' Helper Function 
+#' 
+#' Comment
+#' 
+#' @param n comment
+#' @param S comment
+#' @param j comment
+#' @param k comment
+#' @return the function
+#' @export
+#' 
 f.TajimaD.min <- function(n,S,j,k) {
   (f.thetaPi.min(n,S,j,k) - S/little.a(n)) / sqrt(u.T(n)*S + v.T(n)*S*S)
 }
 
 ## Let's plot dependence of
 ## Tajima's D on frequency of singletons, k ##
-###========== PLOTSTATISTIC ===========###
+#' Helper Function 
+#' 
+#' Comment 
+#' 
+#' @param R comment
+#' @param n comment
+#' @param S comment
+#' @param j comment
+#' @param theta comment
+#' @param scenario comment
+#' @param plot_points comment
+#' @param ... comment
+#' @return the function
+#' @export
+#' 
 plot_tajima_D_k <- function(R,n,S,j,theta,scenario,plot_points = FALSE,...){
   vec.k = c(0:S)
   vec.TajimaD.max = f.TajimaD.max(n,S,j,vec.k)
@@ -322,7 +482,17 @@ plot_tajima_D_k <- function(R,n,S,j,theta,scenario,plot_points = FALSE,...){
 
 ## Let's plot dependence of
 ## Tajima's D on S ##
-plot_tajima_D_S <- function(n,S,j,k){
+#' Helper Function 
+#' 
+#' Comment
+#' 
+#' @param n comment
+#' @param j comment
+#' @param k comment
+#' @return the function
+#' @export
+#' 
+plot_tajima_D_S <- function(n,j,k){
   vec.S = seq(from=k,to=200,by=1) 
   vec.TajimaD.max = f.TajimaD.max(n,vec.S,j,k)
   vec.TajimaD.min = f.TajimaD.min(n,vec.S,j,k)
@@ -339,6 +509,18 @@ plot_tajima_D_S <- function(n,S,j,k){
 # n.lower=3
 # n.upper=50
 
+#' Helper Function 
+#' 
+#' Comment 
+#' 
+#' @param n.lower comment
+#' @param n.upper comment
+#' @param S comment
+#' @param j comment
+#' @param k comment
+#' @return the function
+#' @export
+#' 
 plot_tajima_D_n <- function(n.lower, n.upper, S,j,k){
   vec.n = c(n.lower:n.upper)
   vec.TajimaD.max=c(1:length(vec.n))
@@ -360,18 +542,54 @@ plot_tajima_D_n <- function(n.lower, n.upper, S,j,k){
 #### Fu and Li's F ####
 
 ### Upper Bound ###
+#' Helper Function 
+#' 
+#' Comment
+#' 
+#' @param n comment
+#' @param S comment
+#' @param j comment
+#' @param k comment
+#' @return the function
+#' @export
+#' 
 f.FuLiF.max <- function(n,S,j,k) {
   (f.thetaPi.max(n,S,j,k) - k) / sqrt(u.F(n)*S + v.F(n)*S*S)
 }
 
 ### Lower Bound ###
+#' Helper Function 
+#' 
+#' Comment
+#' 
+#' @param n comment
+#' @param S comment
+#' @param j comment
+#' @param k comment
+#' @return the function
+#' @export
+#' 
 f.FuLiF.min <- function(n,S,j,k) {
   (f.thetaPi.min(n,S,j,k) - k) / sqrt(u.F(n)*S + v.F(n)*S*S)
 }
 
 ## Let's plot dependence of
 ## Fu and Li's F on frequency of singletons \xi_1 ##
-###========== PLOTSTATISTIC ===========###
+#' Helper Function 
+#' 
+#' Comment
+#' 
+#' @param R comment
+#' @param n comment
+#' @param S comment
+#' @param j comment
+#' @param theta comment
+#' @param scenario comment
+#' @param plot_points comment
+#' @param ... comment
+#' @return the function
+#' @export
+#' 
 plot_Fu_li_k <- function(R,n,S,j,theta=5,scenario ="neutral", plot_points = FALSE,...){
   vec.k = c(0:S)
   vec.FuLiF.max = f.FuLiF.max(n,S,j,vec.k)
@@ -389,53 +607,20 @@ plot_Fu_li_k <- function(R,n,S,j,theta=5,scenario ="neutral", plot_points = FALS
   }
 }
 
-# plot_Fu_li_k(R,n,S,j,theta,scenario,plot_points = TRUE)
-
-######### MEGA FUNCTIONS #######
-#=============================================
-# This section is used to plot the statistic 
-plot_statistic <- function(f = 'FuLi', R ,n, S,j, theta , scenario = 'neutral',
-                           plot_points = FALSE, ...){
-  if(f == 'FuLi'){
-    plot_Fu_li_k(R,n,S,j,theta,scenario,plot_points)
-  } else if (f == 'TajPi'){
-    plot_tajima_Pi_k(R , n , S , j , theta,scenario,plot_points)
-  } else if(f == 'TajD'){
-    plot_tajima_D_k(R,n,S,j,theta,scenario,plot_points)
-  }
-}
-
-# plot_statistic('TajPi', R = 100 ,n = 500,S = 100,j = 1, theta=5, scenario,plot_points = TRUE)
-#=============================================
-# This section is used to plot functions depending on no. of sampled individuals, n
-plot_n <- function(f= "FuLi",n.lower,n.upper, S,j,k, ...){
-  if(f == 'FuLi'){
-    plot_Fu_li_n(n.lower,n.upper,S,j,k)
-  } else if (f == 'TajPi'){
-    plot_tajima_Pi_n(n.lower,n.upper,S,j,k)
-  } else if(f == 'TajD'){
-    plot_tajima_D_n(n.lower,n.upper,S,j,k)
-  }
-}
-# k = 5
-# plot_n("FuLi", n.lower,n.upper,S,j,k)
-#=============================================
-# This section is used to plot functions depending on no. of segregating sites, S
-plot_S <- function(f = 'FuLi', n, S,j,k,...){
-  if(f == 'FuLi'){
-    plot_Fu_li_S(n,S,j,k)
-  } else if (f == 'TajPi'){
-    plot_tajima_Pi_S(n,S,j,k)
-  } else if(f == 'TajD'){
-    plot_tajima_D_S(n,S,j,k)
-  }
-}
-
-#=============================================
-
 ## Let's plot dependence of
 ## Fu and Li's F on S ##
-plot_Fu_li_S <- function(n,S,j,k,...){
+#' Helper Function 
+#' 
+#' Comment
+#' 
+#' @param n comment
+#' @param j comment
+#' @param k comment
+#' @param ... comment
+#' @return the function
+#' @export
+#' 
+plot_Fu_li_S <- function(n,j,k,...){
   vec.S = seq(from=k,to=200,by=1) 
   vec.FuLiF.max = f.FuLiF.max(n,vec.S,j,k)
   vec.FuLiF.min = f.FuLiF.min(n,vec.S,j,k)
@@ -450,6 +635,20 @@ plot_Fu_li_S <- function(n,S,j,k,...){
 
 ## Let's plot dependence of
 ## Fu and Li's F on n ##
+
+#' Helper Function 
+#' 
+#' Comment
+#' 
+#' @param n.lower comment
+#' @param n.upper comment
+#' @param S comment
+#' @param j comment
+#' @param k comment
+#' @param ... comment
+#' @return the function
+#' @export
+#' 
 plot_Fu_li_n <- function(n.lower,n.upper,S,j,k,...){
   # n.lower=3
   # n.upper=100
@@ -468,4 +667,109 @@ plot_Fu_li_n <- function(n.lower,n.upper,S,j,k,...){
 
 # plot_Fu_li_n(n.lower,n.upper,S,j,k)
 
-###=================
+
+######### MEGA FUNCTIONS #######
+#=============================================
+#' A function to generate and plot summary statistics of parametric molecular genetic data,
+#' together with their model-independent bounds.
+#'
+#' Return a plot specified by the input parameters.
+#'
+#' @param f a string denoting statistic {FuLi, TajPi, TajD}
+#' @param R the number of data points to generate from simulation runs 
+#' @param n the number of sampled individuals
+#' @param S the number of segregating sites or polymorphic sites
+#' @param j the argument of the component of the site frequency spectrum 
+#' @param theta the mutation rate, need to be specified if plot_points=TRUE
+#' @param scenario the parametric model {neutral, bottleneck, expansion}, if plot_points=TRUE
+#' @param plot_points option of generating data from parametric model {TRUE, FALSE}
+#' @param ... additional arguments to be passed (none in actuality)
+#' @return plot of bounds according to parameter inputs, and optionally data points
+#'
+#' @keywords plot, simulation
+#'
+#' @export
+#'
+#' @examples
+#' plot_statistic(f="FuLi",R=100,n=500,S=100,j=1,theta=5.0,scenario="neutral",plot_points=FALSE)
+#' 
+
+plot_statistic <- function(f = 'FuLi', R ,n, S,j, theta , scenario = 'neutral',
+                           plot_points = FALSE, ...){
+  if(f == 'FuLi'){
+    plot_Fu_li_k(R,n,S,j,theta,scenario,plot_points)
+  } else if (f == 'TajPi'){
+    plot_tajima_Pi_k(R , n , S , j , theta,scenario,plot_points)
+  } else if(f == 'TajD'){
+    plot_tajima_D_k(R,n,S,j,theta,scenario,plot_points)
+  }
+}
+
+# plot_statistic('TajPi', R = 100 ,n = 500,S = 100,j = 1, theta=5, scenario = 'neutral',plot_points = FALSE)
+#=============================================
+
+#' A function to plot model-independent bounds on summary statistics
+#' as they depend on the number of individuals sampled.
+#'
+#' Return a plot specified by the input parameters.
+#'
+#' @param f a string denoting statistic {FuLi, TajPi, TajD}
+#' @param n.lower the minimum number of sampled individuals, always set >=3
+#' @param n.upper the maximum number of sampled individuals
+#' @param S the number of segregating sites or polymorphic sites
+#' @param j the argument of the component of the site frequency spectrum 
+#' @param k the component of the site frequency spectrum
+#' @param ... additional arguments to be passed (none in actuality)
+#' @return plot of bounds according to parameter inputs
+#'
+#' @keywords plot, sampled individuals
+#'
+#' @export
+#'
+#' @examples
+#' plot_n(f="FuLi",n.lower=3,n.upper=50,S=100,j=1,k=5)
+#'
+
+plot_n <- function(f= "FuLi",n.lower,n.upper, S,j,k, ...){
+  if(f == 'FuLi'){
+    plot_Fu_li_n(n.lower,n.upper,S,j,k)
+  } else if (f == 'TajPi'){
+    plot_tajima_Pi_n(n.lower,n.upper,S,j,k)
+  } else if(f == 'TajD'){
+    plot_tajima_D_n(n.lower,n.upper,S,j,k)
+  }
+}
+
+#=============================================
+
+#' A function to plot model-independent bounds on summary statistics
+#' as they depend on the number of segregating or polymorphic sites.
+#'
+#' Return a plot specified by the input parameters.
+#'
+#' @param f a string denoting statistic {FuLi, TajPi, TajD}
+#' @param n the number of sampled individuals
+#' @param j the argument of the component of the site frequency spectrum 
+#' @param k the component of the site frequency spectrum
+#' @param ... additional arguments to be passed (none in actuality)
+#' @return plot of bounds according to parameter inputs
+#'
+#' @keywords plot, sampled individuals
+#'
+#' @export
+#'
+#' @examples
+#' plot_S(f="FuLi",n=50,j=1,k=5)
+#'
+
+plot_S <- function(f = 'FuLi',n,j,k,...){
+  if(f == 'FuLi'){
+    plot_Fu_li_S(n,j,k)
+  } else if (f == 'TajPi'){
+    plot_tajima_Pi_S(n,j,k)
+  } else if(f == 'TajD'){
+    plot_tajima_D_S(n,j,k)
+  }
+}
+
+#=============================================

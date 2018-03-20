@@ -21,9 +21,9 @@
 #' @seealso \code{\link{plot_tajima_D_k}}
 #' @seealso \code{\link{plot_tajima_D_S}}
 #' @seealso \code{\link{plot_tajima_D_n}}
-#' @seealso \code{\link{f.FuLi.max}}
-#' @seealso \code{\link{f.FuLi.min}}
-#' @seealso \code{\link{plot_Fu_Li_k}}
+#' @seealso \code{\link{f.FuLiF.max}}
+#' @seealso \code{\link{f.FuLiF.min}}
+#' @seealso \code{\link{plot_Fu_li_k}}
 #' @seealso \code{\link{plot_statistic}}
 #' @seealso \code{\link{plot_n}}
 #' @seealso \code{\link{plot_S}}

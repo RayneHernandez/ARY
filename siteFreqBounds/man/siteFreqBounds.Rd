@@ -47,11 +47,11 @@ for functions \code{\link{f.min}} and  \code{\link{f.max}}.
 
 \code{\link{plot_tajima_D_n}}
 
-\code{\link{f.FuLi.max}}
+\code{\link{f.FuLiF.max}}
 
-\code{\link{f.FuLi.min}}
+\code{\link{f.FuLiF.min}}
 
-\code{\link{plot_Fu_Li_k}}
+\code{\link{plot_Fu_li_k}}
 
 \code{\link{plot_statistic}}
 

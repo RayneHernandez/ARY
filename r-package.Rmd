@@ -8,7 +8,7 @@ This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute
 Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
 
 ```{r}
-pkgName = "siteFreqBound2"
+pkgName = "siteFreqBounds"
 
 # Note: need to figure out how to create c(Author1,Author2,Author3) properly
 #myself <- c(utils::person(given = "Alan", email = 'alanaw1@stanford.edu', role = 'cre'),
@@ -39,7 +39,7 @@ options(
 
 ``` {r,eval=TRUE}
 devtools::create(path = pkgName, rstudio = FALSE) # create new path / folder
-devtools::use_rcpp(pkg=pkgName)
+#devtools::use_rcpp(pkg=pkgName)
 library(readr)
 descriptionFilePath <- paste(pkgName, "DESCRIPTION", sep = .Platform$file.sep)
 description <- readr::read_lines(descriptionFilePath)
@@ -62,8 +62,8 @@ devtools::install(pkg = pkgName)
 devtools::check(pkg = pkgName)
 ```
 ```{r}
-library(siteFreqBound)
-siteFreqBound::plot_statistic('FuLi', 100 ,500, 100,1, 5.0 , 'neutral',TRUE)
+library(siteFreqBounds)
+siteFreqBounds::plot_statistic('FuLi', 100 ,500, 100,1, 5.0 , 'neutral',TRUE)
 ```
 
 When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
